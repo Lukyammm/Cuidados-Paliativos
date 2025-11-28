@@ -90,9 +90,14 @@
       background: linear-gradient(135deg, #0ea5e9, #14b8a6);
       display: grid;
       place-items: center;
-      font-weight: 800;
+      padding: 8px;
       color: #ffffff;
       box-shadow: 0 10px 26px rgba(14, 165, 233, 0.35);
+    }
+
+    .brand-avatar svg {
+      width: 36px;
+      height: 36px;
     }
 
     .brand-text span.title {
@@ -350,7 +355,15 @@
     <header class="hero">
       <div class="hero-top">
         <div class="brand">
-          <div class="brand-avatar" aria-label="Cuidados Paliativos">🫂</div>
+          <div class="brand-avatar" aria-label="Cuidados Paliativos" role="img">
+            <svg viewBox="0 0 64 64" fill="none" aria-hidden="true" focusable="false">
+              <path d="M32 24c-2.4-5.2-10.1-5.6-13 0-3 5.8 1 11.4 13 19 12-7.6 16-13.2 13-19-3-5.6-10.6-5-13 0Z" stroke="#F1F5F9" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M31.5 19v7m-3.5-3.5h7" stroke="#F1F5F9" stroke-width="2.4" stroke-linecap="round"/>
+              <path d="M12 36c0 8.2 6.2 14 13.5 14H30c2.2 0 4-1.8 4-4v-3" stroke="#E0F2FE" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M52 36c0 8.2-6.2 14-13.5 14H34c-2.2 0-4-1.8-4-4v-3" stroke="#E0F2FE" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M24 32.5 19 29m26 3.5 5-3.5" stroke="#E0F2FE" stroke-width="2.4" stroke-linecap="round"/>
+            </svg>
+          </div>
           <div class="brand-text">
             <span class="title">Cuidados Paliativos · HUC</span>
             <span class="subtitle">Painel assistencial conectado à planilha institucional</span>
