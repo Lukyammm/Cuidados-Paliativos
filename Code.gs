@@ -221,13 +221,32 @@ function adicionarOuAtualizarAcompanhamento(pront) {
 
   const prontStr = String(pront).trim();
 
+  const linhasEncontradas = [];
   for (let i = 1; i < dados.length; i++) {
     if (String(dados[i][0]).trim() == prontStr) {
-      shA.getRange(i + 1, 9).setValue("Ativo");
-      shA.getRange(i + 1, 12).setValue(new Date());
-      logAcao("Atualizou", prontStr, "Atualização do acompanhamento");
-      return "Acompanhamento atualizado.";
+      linhasEncontradas.push(i + 1); // índice real na planilha
     }
+  }
+
+  if (linhasEncontradas.length) {
+    // Mantém o primeiro registro e elimina duplicatas
+    shA.getRange(linhasEncontradas[0], 9).setValue("Ativo");
+    shA.getRange(linhasEncontradas[0], 12).setValue(new Date());
+
+    if (linhasEncontradas.length > 1) {
+      const duplicates = linhasEncontradas.slice(1).sort((a, b) => b - a);
+      duplicates.forEach(idx => shA.deleteRow(idx));
+      logAcao(
+        "Limpar duplicados",
+        prontStr,
+        `Removidas ${duplicates.length} duplicatas ao atualizar.`
+      );
+    }
+
+    logAcao("Atualizou", prontStr, "Atualização do acompanhamento");
+    return linhasEncontradas.length > 1
+      ? "Acompanhamento atualizado e duplicatas removidas."
+      : "Acompanhamento atualizado.";
   }
 
   const info = searchPacientePorProntuario(prontStr);
@@ -266,12 +285,22 @@ function listarAcompanhamentosAtivos() {
   const emerg = ss.getSheetByName(ABA_EMERG).getDataRange().getValues();
   const atvs = ss.getSheetByName(ABA_ATIVOS).getDataRange().getValues();
 
+  const contagemPorPront = {};
+  for (let i = 1; i < atvs.length; i++) {
+    const prontTmp = String(atvs[i][0]).trim();
+    if (!prontTmp) continue;
+    if (!contagemPorPront[prontTmp]) contagemPorPront[prontTmp] = [];
+    contagemPorPront[prontTmp].push(i + 1); // linha real na planilha
+  }
+
   let lista = [];
 
   for (let i = 1; i < atvs.length; i++) {
     const row = atvs[i];
     const pront = String(row[0]).trim();
     if (!pront) continue;
+
+    const linhaPlanilha = i + 1;
 
     const geralInfo = buscarNaGeral(geral, pront);
     const saidaInfo = buscarSaida(saidas, pront);
@@ -319,7 +348,11 @@ function listarAcompanhamentosAtivos() {
 
       precisaMoverSerie: precisaMover,
       desfechoDetectadoLabel: desfechoLabel,
-      dataDesfechoLabel: dataDesfechoLabel
+      dataDesfechoLabel: dataDesfechoLabel,
+
+      rowIndex: linhaPlanilha,
+      duplicado: (contagemPorPront[pront] || []).length > 1,
+      linhasDuplicadas: contagemPorPront[pront] || []
     });
   }
 
@@ -370,6 +403,30 @@ function moverParaSerieHistorica(pront) {
 
   logAcao("Mover", pront, "Movido para série histórica");
   return "Movido para a série histórica.";
+}
+
+
+/*******************************************************************************************
+ * FUNÇÃO 5 — Excluir acompanhamento (apoio a duplicados)
+ *******************************************************************************************/
+function excluirAcompanhamentoPorLinha(rowIndex) {
+  garantirAbas();
+
+  const idx = parseInt(rowIndex, 10);
+  if (!idx || idx < 2) return "Linha inválida para exclusão.";
+
+  const ss = SpreadsheetApp.getActive();
+  const shA = ss.getSheetByName(ABA_ATIVOS);
+  const lastRow = shA.getLastRow();
+
+  if (idx > lastRow) return "Registro não encontrado.";
+
+  const row = shA.getRange(idx, 1, 1, shA.getLastColumn()).getValues()[0];
+  const pront = String(row[0]).trim() || "desconhecido";
+
+  shA.deleteRow(idx);
+  logAcao("Excluir", pront, `Registro removido da linha ${idx}.`);
+  return "Registro excluído com sucesso.";
 }
 
 
