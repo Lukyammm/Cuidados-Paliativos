@@ -234,14 +234,15 @@
     .summary-card .value { font-size: 1.45rem; font-weight: 800; }
     .summary-card .trend { font-size: 0.9rem; color: #475569; }
 
-    .panels { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 14px; }
+    .panels { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 14px; }
     .panel { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 18px; box-shadow: var(--shadow); }
     .panel h2 { font-size: 1.02rem; display: flex; align-items: center; gap: 8px; margin-bottom: 6px; color: #0f172a; }
     .panel p { color: #475569; font-size: 0.92rem; }
 
     .preview-card { margin-top: 10px; border-radius: 14px; padding: 12px; background: #e0f2fe; border: 1px solid #bae6fd; }
-    .preview-top { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+    .preview-top { display: flex; justify-content: space-between; gap: 14px; align-items: flex-start; flex-wrap: wrap; }
     .preview-meta { display: flex; flex-wrap: wrap; gap: 6px; color: #334155; font-size: 0.88rem; }
+    .preview-status { display: inline-flex; align-items: center; justify-content: center; }
     .tag { padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border); background: #f8fafc; font-size: 0.8rem; color: #0f172a; }
     .tag.green { border-color: #bbf7d0; color: #0f172a; background: #ecfdf3; }
     .tag.amber { border-color: #fed7aa; color: #7c2d12; background: #fffbeb; }
@@ -249,8 +250,10 @@
     .timeline { margin-top: 10px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
     .timeline-block { background: #f8fafc; border: 1px dashed var(--border); padding: 10px; border-radius: 12px; font-size: 0.9rem; color: #475569; }
     .preview-actions { margin-top: 10px; display: flex; justify-content: flex-end; }
-    .btn-primary { border: none; border-radius: 12px; padding: 10px 16px; background: linear-gradient(135deg, #0ea5e9, #0f766e); color: #ffffff; font-weight: 800; cursor: pointer; box-shadow: 0 12px 28px rgba(14,165,233,0.25); }
+    .btn-primary { border: none; border-radius: 12px; padding: 10px 16px; background: linear-gradient(135deg, #0ea5e9, #0f766e); color: #ffffff; font-weight: 800; cursor: pointer; box-shadow: 0 12px 28px rgba(14,165,233,0.25); display: inline-flex; align-items: center; gap: 8px; }
     .btn-primary:hover { transform: translateY(-1px); }
+    .btn-primary[disabled] { opacity: 0.7; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-primary .spinner { width: 14px; height: 14px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.55); border-top-color: #ffffff; animation: spin 0.8s linear infinite; }
 
     .panel-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
     .panel-subtitle { color: #475569; font-size: 0.9rem; }
@@ -302,6 +305,8 @@
 
     .legend { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
 
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
     @keyframes pulse { 0% { transform: scale(0.85); opacity: 0.7; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(0.85); opacity: 0.7; } }
 
     .footer { color: #475569; font-size: 0.85rem; text-align: center; padding: 6px; }
@@ -345,7 +350,7 @@
     <header class="hero">
       <div class="hero-top">
         <div class="brand">
-          <div class="brand-avatar">CP</div>
+          <div class="brand-avatar" aria-label="Cuidados Paliativos">🫂</div>
           <div class="brand-text">
             <span class="title">Cuidados Paliativos · HUC</span>
             <span class="subtitle">Painel assistencial conectado à planilha institucional</span>
@@ -416,20 +421,6 @@
       <article class="panel">
         <div class="panel-header">
           <div>
-            <h2>🩺 Buscar paciente por prontuário</h2>
-            <p>Consulta simultânea em Geral Interconsultas, Saídas e Emergência. Adicione ou atualize o acompanhamento com um clique.</p>
-          </div>
-          <span class="badge">Novo acompanhamento</span>
-        </div>
-
-        <div id="searchResultContainer">
-          <div class="empty">Digite um prontuário e confirme para pré-visualizar o caso.</div>
-        </div>
-      </article>
-
-      <article class="panel">
-        <div class="panel-header">
-          <div>
             <h2>📋 Acompanhamentos ativos</h2>
             <p class="panel-subtitle">Baseada na aba <strong>Acompanhamento_Ativo</strong> e cruzada com Saídas / Emergência.</p>
           </div>
@@ -447,6 +438,20 @@
         <div id="listLoading" class="empty">Carregando pacientes em acompanhamento… <span class="loading-dot"></span></div>
         <div id="activeList" class="list-wrapper" style="display:none;"></div>
         <div id="emptyList" class="empty" style="display:none;">Nenhum paciente em acompanhamento ativo.</div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <h2>🩺 Buscar paciente por prontuário</h2>
+            <p>Consulta simultânea em Geral Interconsultas, Saídas e Emergência. Adicione ou atualize o acompanhamento com um clique.</p>
+          </div>
+          <span class="badge">Novo acompanhamento</span>
+        </div>
+
+        <div id="searchResultContainer">
+          <div class="empty">Digite um prontuário e confirme para pré-visualizar o caso.</div>
+        </div>
       </article>
     </section>
 
@@ -537,7 +542,7 @@
                 ${p.especialidade ? `<span>${escapeHtml(p.especialidade)}</span>` : ''}
               </div>
             </div>
-            <div>
+            <div class="preview-status">
               ${p.jaAcompanhado ? '<span class="tag green">Já em acompanhamento</span>' : '<span class="tag amber">Novo para o CP</span>'}
             </div>
           </div>
@@ -557,8 +562,9 @@
           </div>
 
           <div class="preview-actions">
-            <button class="btn-primary" onclick="onAdicionarClick()">
-              ${p.jaAcompanhado ? 'Atualizar acompanhamento' : 'Adicionar ao acompanhamento'}
+            <button class="btn-primary" id="btnAdicionar" data-default-label="${p.jaAcompanhado ? 'Atualizar acompanhamento' : 'Adicionar ao acompanhamento'}" onclick="onAdicionarClick()">
+              <span class="spinner" style="display:none;"></span>
+              <span class="btn-label">${p.jaAcompanhado ? 'Atualizar acompanhamento' : 'Adicionar ao acompanhamento'}</span>
             </button>
           </div>
         </div>
@@ -568,15 +574,31 @@
     function onAdicionarClick() {
       if (!currentSearchPreview || !currentSearchPreview.prontuario) return;
       const pront = currentSearchPreview.prontuario;
+      const btn = document.getElementById('btnAdicionar');
+      const labelEl = btn?.querySelector('.btn-label');
+      const spinnerEl = btn?.querySelector('.spinner');
+      const defaultLabel = btn?.dataset?.defaultLabel || 'Salvar acompanhamento';
+
+      if (btn) btn.disabled = true;
+      if (labelEl) labelEl.textContent = 'Salvando...';
+      if (spinnerEl) spinnerEl.style.display = 'inline-block';
 
       google.script.run
         .withSuccessHandler(msg => {
           showToast(msg || 'Acompanhamento registrado.');
+          showSearchMessage('Acompanhamento registrado. Pesquise outro prontuário para continuar.');
+          document.getElementById('inputBuscaPront').value = '';
           refreshAcompanhamentos();
+          if (btn) btn.disabled = false;
+          if (labelEl) labelEl.textContent = defaultLabel;
+          if (spinnerEl) spinnerEl.style.display = 'none';
         })
         .withFailureHandler(err => {
           console.error(err);
           showToast('Erro ao salvar acompanhamento.', 'error');
+          if (btn) btn.disabled = false;
+          if (labelEl) labelEl.textContent = defaultLabel;
+          if (spinnerEl) spinnerEl.style.display = 'none';
         })
         .adicionarOuAtualizarAcompanhamento(pront);
     }
