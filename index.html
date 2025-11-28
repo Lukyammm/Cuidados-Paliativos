@@ -2,698 +2,1051 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Cuidados Paliativos – Pacientes Atuais</title>
+  <title>CP · Painel de Acompanhamento</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
     :root {
-      /* Core palette */
-      --primary-color: #3B82F6;
-      --secondary-color: #10B981;
-      --success-color: #22C55E;
-      --warning-color: #F59E0B;
-      --danger-color: #EF4444;
-      --bg-color: #F3F4F6;
-      --card-bg: #FFFFFF;
-      --border-color: #E5E7EB;
-      --text-color: #111827;
-      --muted-text: #6B7280;
-      --shadow-soft: 0 10px 25px rgba(15, 23, 42, 0.08);
-      --radius-lg: 18px;
+      --bg-soft: #f8fafc;
+      --bg-soft-2: #eef2ff;
+      --card-bg: #ffffff;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-red: #ef4444;
+      --text-main: #0f172a;
+      --text-muted: #6b7280;
+      --border-subtle: rgba(148, 163, 184, 0.45);
+      --radius-xl: 22px;
       --radius-pill: 999px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.10);
+      --shadow-chip: 0 6px 14px rgba(148, 163, 184, 0.30);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        sans-serif;
+      font-family: "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     body {
-      background: radial-gradient(circle at top left, #e5f2ff, #f9fafb 45%, #eefaf6);
-      color: var(--text-color);
+      background: radial-gradient(circle at top left, #dbeafe, #f9fafb 40%, #f0fdf4);
+      color: var(--text-main);
       min-height: 100vh;
-      padding: 24px;
+      padding: 20px;
     }
 
-    .app-shell {
+    .shell {
       max-width: 1200px;
-      margin: 0 auto;
+      margin: 0 auto 40px;
     }
 
-    .app-header {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
+    /* HEADER ------------------------------------------------------ */
 
-    .app-title {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .app-title h1 {
-      font-size: 1.5rem;
-      font-weight: 700;
+    .top-bar {
       display: flex;
       align-items: center;
-      gap: 8px;
-      color: #0f172a;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
     }
 
-    .badge-pill {
-      padding: 3px 10px;
-      border-radius: var(--radius-pill);
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      font-weight: 600;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      color: #64748b;
-      background: rgba(248, 250, 252, 0.7);
-      backdrop-filter: blur(4px);
-    }
-
-    .app-title p {
-      font-size: 0.85rem;
-      color: var(--muted-text);
-    }
-
-    .app-actions {
+    .brand-area {
       display: flex;
-      flex-wrap: wrap;
       align-items: center;
       gap: 10px;
     }
 
-    .search-box {
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: var(--radius-pill);
-      padding: 8px 14px;
+    .brand-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #22c55e, #3b82f6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #f9fafb;
+      font-size: 0.9rem;
+      font-weight: 700;
+      box-shadow: var(--shadow-chip);
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-text span.title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-text span.subtitle {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .top-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .search-field {
       display: flex;
       align-items: center;
       gap: 8px;
-      border: 1px solid var(--border-color);
-      box-shadow: 0 4px 10px rgba(148, 163, 184, 0.15);
+      padding: 7px 14px;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 8px 18px rgba(148, 163, 184, 0.25);
     }
 
-    .search-box input {
+    .search-field input {
       border: none;
-      outline: none;
       background: transparent;
+      outline: none;
       font-size: 0.85rem;
-      width: 180px;
+      min-width: 160px;
     }
 
-    .pill-filter-group {
+    .search-field button {
+      border: none;
+      border-radius: var(--radius-pill);
+      padding: 5px 11px;
+      background: var(--accent-blue);
+      color: #f9fafb;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 10px 18px rgba(59, 130, 246, 0.4);
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    .search-field button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 26px rgba(59, 130, 246, 0.55);
+    }
+
+    .filter-group {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
     }
 
-    .pill-filter {
-      padding: 5px 10px;
+    .filter-pill {
       border-radius: var(--radius-pill);
-      border: 1px solid rgba(148, 163, 184, 0.6);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      padding: 5px 10px;
       font-size: 0.75rem;
-      cursor: pointer;
       background: rgba(248, 250, 252, 0.8);
       color: #475569;
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      cursor: pointer;
       transition: all 0.15s ease;
     }
 
-    .pill-filter span.dot {
+    .filter-pill span.dot {
       width: 7px;
       height: 7px;
       border-radius: 999px;
       display: inline-block;
     }
 
-    .pill-filter[data-filter="todos"] span.dot {
-      background: var(--primary-color);
-    }
+    .filter-pill[data-filter="todos"] span.dot { background: #0f172a; }
+    .filter-pill[data-filter="uti"] span.dot { background: var(--accent-red); }
+    .filter-pill[data-filter="enfermaria"] span.dot { background: var(--accent-green); }
+    .filter-pill[data-filter="pendente"] span.dot { background: var(--accent-amber); }
 
-    .pill-filter[data-filter="uti"] span.dot {
-      background: var(--danger-color);
-    }
-
-    .pill-filter[data-filter="enfermaria"] span.dot {
-      background: var(--secondary-color);
-    }
-
-    .pill-filter[data-filter="emergencia"] span.dot {
-      background: var(--warning-color);
-    }
-
-    .pill-filter.active {
+    .filter-pill.active {
       background: #0f172a;
-      color: #e5e7eb;
       border-color: transparent;
-      box-shadow: 0 6px 12px rgba(15, 23, 42, 0.25);
+      color: #e5e7eb;
+      box-shadow: var(--shadow-chip);
     }
-
-    .pill-filter.active span.dot {
+    .filter-pill.active span.dot {
       background: #e5e7eb;
     }
 
-    .app-body {
-      margin-top: 10px;
+    @media (max-width: 850px) {
+      .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .top-controls {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .search-field {
+        flex: 1;
+      }
+      .search-field input {
+        width: 100%;
+      }
     }
 
+    /* SUMMARY STRIP ------------------------------------------------------ */
+
     .summary-strip {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 12px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    @media (max-width: 900px) {
+      .summary-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 500px) {
+      .summary-strip {
+        grid-template-columns: minmax(0, 1fr);
+      }
     }
 
     .summary-card {
-      flex: 1 1 160px;
-      min-width: 140px;
       background: linear-gradient(135deg, #ffffff, #eef2ff);
-      border-radius: 999px;
-      padding: 8px 14px;
+      border-radius: 24px;
+      padding: 10px 14px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      box-shadow: 0 6px 14px rgba(148, 163, 184, 0.2);
+      justify-content: space-between;
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      box-shadow: 0 12px 28px rgba(148, 163, 184, 0.35);
     }
 
-    .summary-card-title {
-      font-size: 0.75rem;
-      color: #6b7280;
+    .summary-card-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+      margin-bottom: 2px;
     }
 
     .summary-card-value {
+      font-size: 1.25rem;
       font-weight: 700;
-      font-size: 1rem;
-      color: #0f172a;
     }
 
-    .list-container {
-      margin-top: 8px;
+    .summary-card-icon {
+      font-size: 1.25rem;
+      opacity: 0.85;
+    }
+
+    /* MAIN LAYOUT ------------------------------------------------------ */
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr);
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 950px) {
+      .main-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 26px;
+      padding: 16px 16px 18px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      backdrop-filter: blur(14px);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 8px;
+    }
+
+    .panel-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .panel-title span.icon {
+      font-size: 0.95rem;
+    }
+
+    .panel-subtitle {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .badge-soft {
+      font-size: 0.7rem;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      background: #0f172a;
+      color: #e5e7eb;
+      box-shadow: var(--shadow-chip);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* SEARCH RESULT ------------------------------------------------------ */
+
+    .search-result-empty {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      padding: 8px 10px;
+      border-radius: 18px;
+      background: rgba(248, 250, 252, 0.9);
+      border: 1px dashed rgba(148, 163, 184, 0.55);
+    }
+
+    .patient-preview {
+      margin-top: 6px;
+      border-radius: 24px;
+      padding: 12px 12px 12px;
+      border: 1px solid rgba(209, 213, 219, 0.95);
+      background: radial-gradient(circle at top left, #e0f2fe, #ffffff 40%);
+      box-shadow: var(--shadow-soft);
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
 
-    .patient-card {
-      background: var(--card-bg);
-      border-radius: var(--radius-lg);
-      padding: 10px 14px;
-      border: 1px solid rgba(209, 213, 219, 0.8);
-      box-shadow: var(--shadow-soft);
-      position: relative;
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.1s ease, box-shadow 0.1s ease, border-color 0.1s ease;
-    }
-
-    .patient-card:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.18);
-      border-color: rgba(59, 130, 246, 0.6);
-    }
-
-    .patient-card-header {
+    .preview-top {
       display: flex;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
       align-items: center;
     }
 
-    .patient-main {
+    .preview-main {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 4px;
     }
 
-    .patient-title-line {
+    .preview-name-line {
       display: flex;
       flex-wrap: wrap;
-      align-items: baseline;
       gap: 6px;
+      align-items: baseline;
     }
 
-    .patient-name {
-      font-size: 0.98rem;
+    .preview-name {
+      font-size: 1.02rem;
       font-weight: 700;
-      color: #111827;
     }
 
-    .patient-pront {
+    .preview-pront {
       font-size: 0.78rem;
-      padding: 1px 8px;
+      padding: 2px 8px;
       border-radius: var(--radius-pill);
       background: rgba(15, 23, 42, 0.06);
-      color: #374151;
+      color: #111827;
       font-weight: 600;
     }
 
-    .patient-meta {
-      font-size: 0.78rem;
-      color: var(--muted-text);
+    .preview-meta {
       display: flex;
       flex-wrap: wrap;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .pill-tag {
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      font-size: 0.72rem;
+      color: #4b5563;
+      background: rgba(249, 250, 251, 0.92);
+    }
+
+    .pill-tag.green { border-color: var(--accent-green); color: #047857; }
+    .pill-tag.red { border-color: var(--accent-red); color: #b91c1c; }
+    .pill-tag.amber { border-color: var(--accent-amber); color: #b45309; }
+
+    .preview-timeline {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 8px;
+      margin-top: 2px;
+      font-size: 0.78rem;
+    }
+
+    @media (max-width: 700px) {
+      .preview-timeline {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .timeline-block {
+      padding: 7px 9px;
+      border-radius: 18px;
+      background: rgba(248, 250, 252, 0.85);
+      border: 1px dashed rgba(209, 213, 219, 0.9);
+    }
+
+    .timeline-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .timeline-value {
+      font-size: 0.8rem;
+    }
+
+    .preview-actions {
+      margin-top: 3px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .btn-primary {
+      border: none;
+      border-radius: 999px;
+      padding: 7px 16px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.45);
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.55);
+    }
+
+    .small-caption {
+      margin-top: 6px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    /* ACTIVE LIST ------------------------------------------------------ */
+
+    .list-wrapper {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 540px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .active-card {
+      background: var(--card-bg);
+      border-radius: 24px;
+      padding: 9px 12px;
+      border: 1px solid rgba(209, 213, 219, 0.9);
+      box-shadow: 0 10px 22px rgba(148, 163, 184, 0.35);
+      cursor: pointer;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.08s ease;
+      position: relative;
+    }
+
+    .active-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(148, 163, 184, 0.45);
+      border-color: rgba(59, 130, 246, 0.6);
+    }
+
+    .active-card-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .active-main {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .active-line-1 {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: baseline;
+    }
+
+    .active-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .active-pront {
+      font-size: 0.75rem;
+      padding: 1px 8px;
+      border-radius: var(--radius-pill);
+      background: rgba(15, 23, 42, 0.05);
+      font-weight: 600;
+    }
+
+    .active-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
     }
 
     .chip {
       padding: 2px 8px;
-      border-radius: var(--radius-pill);
+      border-radius: 999px;
       border: 1px solid rgba(148, 163, 184, 0.7);
-      font-size: 0.7rem;
-      color: #4b5563;
-      background: rgba(249, 250, 251, 0.8);
+      font-size: 0.72rem;
+      background: rgba(248, 250, 252, 0.95);
     }
 
-    .badge-critical {
-      background: rgba(239, 68, 68, 0.1);
-      border-color: rgba(239, 68, 68, 0.8);
-      color: #b91c1c;
-    }
+    .chip.red { border-color: var(--accent-red); color: #b91c1c; }
+    .chip.green { border-color: var(--accent-green); color: #047857; }
+    .chip.amber { border-color: var(--accent-amber); color: #b45309; }
 
-    .badge-ok {
-      background: rgba(16, 185, 129, 0.08);
-      border-color: rgba(16, 185, 129, 0.7);
-      color: #047857;
-    }
-
-    .badge-warn {
-      background: rgba(245, 158, 11, 0.1);
-      border-color: rgba(245, 158, 11, 0.8);
-      color: #b45309;
-    }
-
-    .card-chevron {
+    .chevron {
       font-size: 1.1rem;
       color: #9ca3af;
-      transition: transform 0.18s ease;
+      transition: transform 0.16s ease;
     }
 
-    .patient-card.expanded .card-chevron {
+    .active-card.expanded .chevron {
       transform: rotate(90deg);
       color: #4b5563;
     }
 
-    .patient-card-body {
-      margin-top: 8px;
-      border-top: 1px dashed rgba(209, 213, 219, 0.9);
-      padding-top: 8px;
+    .active-body {
+      margin-top: 7px;
+      border-top: 1px dashed rgba(209, 213, 219, 0.95);
+      padding-top: 7px;
       display: none;
+      font-size: 0.78rem;
     }
 
-    .patient-card.expanded .patient-card-body {
+    .active-card.expanded .active-body {
       display: block;
     }
 
-    .body-grid {
+    .active-body-grid {
       display: grid;
-      grid-template-columns: minmax(0, 2fr) minmax(0, 2fr);
-      gap: 10px;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 8px;
     }
 
-    @media (max-width: 768px) {
-      .body-grid {
+    @media (max-width: 700px) {
+      .active-body-grid {
         grid-template-columns: minmax(0, 1fr);
       }
-      .search-box input {
-        width: 130px;
-      }
     }
 
-    .section-title {
-      font-size: 0.75rem;
+    .section-label {
+      font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      color: #9ca3af;
-      margin-bottom: 4px;
-      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 2px;
     }
 
     .info-list {
       list-style: none;
-      font-size: 0.8rem;
-      color: #374151;
       display: flex;
       flex-direction: column;
       gap: 3px;
     }
 
     .info-list span.label {
-      color: #6b7280;
+      color: var(--text-muted);
       font-weight: 500;
     }
 
-    .tag-row {
+    .pending-banner {
+      margin-top: 6px;
+      padding: 7px 9px;
+      border-radius: 16px;
+      background: rgba(248, 250, 252, 0.96);
+      border: 1px dashed rgba(248, 113, 113, 0.7);
       display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      margin-top: 4px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.75rem;
     }
 
-    .empty-state {
-      margin-top: 30px;
-      text-align: center;
-      color: #9ca3af;
-      font-size: 0.9rem;
+    .pending-banner span strong {
+      color: #b91c1c;
     }
 
-    .loading-bar {
-      height: 3px;
-      width: 110px;
+    .pending-banner button {
+      border: none;
       border-radius: 999px;
-      background: linear-gradient(90deg, rgba(59,130,246,0.1), rgba(59,130,246,0.9));
-      background-size: 200% 100%;
-      animation: loadingSlide 1.1s infinite linear;
-      margin-top: 4px;
+      padding: 5px 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: var(--accent-red);
+      color: #fef2f2;
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(239, 68, 68, 0.4);
     }
 
-    @keyframes loadingSlide {
-      0% { background-position: 0% 0%; }
-      100% { background-position: 200% 0%; }
+    .empty-text {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .loading-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent-blue);
+      box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+      animation: pulse 1.2s infinite;
+      margin-left: 4px;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.6); }
+      70% { transform: scale(1.8); box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
     }
 
     .footer {
-      margin-top: 18px;
+      margin-top: 14px;
       font-size: 0.7rem;
-      color: #9ca3af;
+      color: var(--text-muted);
       text-align: right;
     }
   </style>
 </head>
 <body>
-  <div class="app-shell">
-    <header class="app-header">
-      <div class="app-title">
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span class="badge-pill">Cuidados Paliativos · HUC</span>
+  <div class="shell">
+    <!-- TOP BAR -->
+    <div class="top-bar">
+      <div class="brand-area">
+        <div class="brand-avatar">CP</div>
+        <div class="brand-text">
+          <span class="title">Cuidados Paliativos · HUC</span>
+          <span class="subtitle">Painel vivo de acompanhamento clínico</span>
         </div>
-        <h1>
-          Pacientes em acompanhamento
-        </h1>
-        <p>
-          Lista gerada automaticamente a partir de <strong>Geral Interconsultas</strong>, <strong>Saídas</strong> e <strong>Emergência</strong>.
-        </p>
       </div>
-      <div class="app-actions">
-        <div class="search-box">
-          <span style="font-size:0.9rem;">🔍</span>
-          <input
-            type="text"
-            id="searchInput"
-            placeholder="Filtrar por nome, prontuário ou clínica..."
-          />
+      <div class="top-controls">
+        <div class="search-field">
+          <span>🧾</span>
+          <input id="inputBuscaPront" type="text" placeholder="Prontuário para buscar / adicionar…" />
+          <button id="btnBuscar">
+            <span>Buscar</span>
+            <span>🔍</span>
+          </button>
         </div>
-        <div class="pill-filter-group">
-          <button class="pill-filter active" data-filter="todos">
+        <div class="filter-group">
+          <button class="filter-pill active" data-filter="todos">
             <span class="dot"></span> Todos
           </button>
-          <button class="pill-filter" data-filter="uti">
+          <button class="filter-pill" data-filter="uti">
             <span class="dot"></span> UTI
           </button>
-          <button class="pill-filter" data-filter="enfermaria">
+          <button class="filter-pill" data-filter="enfermaria">
             <span class="dot"></span> Enfermaria
           </button>
-          <button class="pill-filter" data-filter="emergencia">
-            <span class="dot"></span> Emergência
+          <button class="filter-pill" data-filter="pendente">
+            <span class="dot"></span> Pendências
           </button>
         </div>
       </div>
-    </header>
+    </div>
 
-    <main class="app-body">
-      <div class="summary-strip">
-        <div class="summary-card">
-          <div>
-            <div class="summary-card-title">Pacientes internados</div>
-            <div class="summary-card-value" id="sumTotal">–</div>
-          </div>
-          <div style="font-size:0.9rem;">🧍‍♂️</div>
+    <!-- SUMMARY STRIP -->
+    <div class="summary-strip">
+      <div class="summary-card">
+        <div>
+          <div class="summary-card-label">Pacientes em acompanhamento</div>
+          <div class="summary-card-value" id="sumTotal">–</div>
         </div>
-        <div class="summary-card">
-          <div>
-            <div class="summary-card-title">Em UTI</div>
-            <div class="summary-card-value" id="sumUti">–</div>
-          </div>
-          <div style="font-size:0.9rem;">🏥</div>
+        <div class="summary-card-icon">🧍‍♂️</div>
+      </div>
+      <div class="summary-card">
+        <div>
+          <div class="summary-card-label">Em UTI</div>
+          <div class="summary-card-value" id="sumUti">–</div>
         </div>
-        <div class="summary-card">
-          <div>
-            <div class="summary-card-title">Emergência / porta</div>
-            <div class="summary-card-value" id="sumEmerg">–</div>
-          </div>
-          <div style="font-size:0.9rem;">🚨</div>
+        <div class="summary-card-icon">🏥</div>
+      </div>
+      <div class="summary-card">
+        <div>
+          <div class="summary-card-label">Pendências de desfecho</div>
+          <div class="summary-card-value" id="sumPendencias">–</div>
         </div>
-        <div class="summary-card">
-          <div>
-            <div class="summary-card-title">> 48h sem resposta</div>
-            <div class="summary-card-value" id="sumAtraso">–</div>
-          </div>
-          <div style="font-size:0.9rem;">⏱️</div>
+        <div class="summary-card-icon">⏳</div>
+      </div>
+      <div class="summary-card">
+        <div>
+          <div class="summary-card-label">> 48h sem resposta</div>
+          <div class="summary-card-value" id="sumAtraso">–</div>
         </div>
+        <div class="summary-card-icon">⏱️</div>
       </div>
+    </div>
 
-      <div id="loadingState">
-        <p style="font-size:0.9rem;color:#6b7280;">Carregando dados dos pacientes…</p>
-        <div class="loading-bar"></div>
-      </div>
+    <!-- MAIN GRID -->
+    <div class="main-grid">
+      <!-- LEFT: SEARCH / ADD -->
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">
+              <span class="icon">🩺</span>
+              Buscar paciente por prontuário
+            </div>
+            <div class="panel-subtitle">
+              A busca é feita em Geral Interconsultas, Emergência e Saídas.
+            </div>
+          </div>
+          <span class="badge-soft">Novo acompanhamento</span>
+        </div>
 
-      <div class="list-container" id="patientsList" style="display:none;"></div>
+        <div id="searchResultContainer">
+          <div class="search-result-empty">
+            Digite um prontuário no topo e clique em <strong>Buscar</strong> para pré-visualizar o caso
+            antes de adicioná-lo ao acompanhamento.
+          </div>
+        </div>
 
-      <div class="empty-state" id="emptyState" style="display:none;">
-        Nenhum paciente encontrado para os filtros aplicados.
-      </div>
+        <div class="small-caption">
+          Após adicionar, o paciente passa a integrar a lista de acompanhamento ativo do CP.
+        </div>
+      </section>
 
-      <div class="footer">
-        Gerado automaticamente · não editar manualmente via Sheets.
-      </div>
-    </main>
+      <!-- RIGHT: ACTIVE LIST -->
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">
+              <span class="icon">📋</span>
+              Acompanhamentos ativos
+            </div>
+            <div class="panel-subtitle">
+              Baseados na aba <strong>Acompanhamento_Ativo</strong> e cruzados com Saídas / Emergência.
+            </div>
+          </div>
+        </div>
+
+        <div id="listLoading" class="empty-text">
+          Carregando pacientes em acompanhamento…
+          <span class="loading-dot"></span>
+        </div>
+
+        <div id="activeList" class="list-wrapper" style="display:none;"></div>
+
+        <div id="emptyList" class="empty-text" style="display:none;">
+          Nenhum paciente em acompanhamento ativo no momento.
+        </div>
+      </section>
+    </div>
+
+    <div class="footer">
+      Dados consolidados automaticamente · registros-chave em <strong>Acompanhamento_Ativo</strong> e <strong>Acompanhamento_Historico</strong>.
+    </div>
   </div>
 
   <script>
-    let allPatients = [];
-    let currentFilter = "todos";
+    let allAcomps = [];
+    let currentFilter = 'todos';
+    let currentSearchPreview = null;
 
-    document.addEventListener("DOMContentLoaded", function () {
-      const searchInput = document.getElementById("searchInput");
-      searchInput.addEventListener("input", applyFilters);
+    document.addEventListener('DOMContentLoaded', () => {
+      // carrega lista
+      refreshAcompanhamentos();
 
-      document.querySelectorAll(".pill-filter").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          document
-            .querySelectorAll(".pill-filter")
-            .forEach((b) => b.classList.remove("active"));
-          btn.classList.add("active");
+      // filtros
+      document.querySelectorAll('.filter-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
           currentFilter = btn.dataset.filter;
-          applyFilters();
+          applyFilterAndRender();
         });
       });
 
-      // Chama o backend GAS
-      if (google && google.script && google.script.run) {
-        google.script.run
-          .withSuccessHandler(onPatientsLoaded)
-          .withFailureHandler(onPatientsError)
-          .getActivePatients();
-      } else {
-        console.error("google.script.run não disponível (testando fora do Apps Script).");
-        onPatientsLoaded([]);
-      }
+      // busca
+      document.getElementById('btnBuscar').addEventListener('click', onBuscarClick);
+      document.getElementById('inputBuscaPront').addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter') onBuscarClick();
+      });
     });
 
-    function onPatientsLoaded(patients) {
-      allPatients = patients || [];
-      document.getElementById("loadingState").style.display = "none";
-      document.getElementById("patientsList").style.display = "flex";
-      updateSummaries();
-      renderPatients(allPatients);
-    }
-
-    function onPatientsError(err) {
-      console.error("Erro ao carregar pacientes:", err);
-      document.getElementById("loadingState").innerHTML =
-        '<p style="color:#b91c1c;font-size:0.9rem;">Erro ao carregar dados. Verifique o script.</p>';
-    }
-
-    function applyFilters() {
-      const term = (document.getElementById("searchInput").value || "")
-        .toLowerCase()
-        .trim();
-
-      let filtered = allPatients.filter((p) => {
-        // filtro texto
-        const texto =
-          (p.prontuario || "") +
-          " " +
-          (p.nome || "") +
-          " " +
-          (p.clinicaAtual || "") +
-          " " +
-          (p.diagnostico || "");
-        if (term && !texto.toLowerCase().includes(term)) return false;
-
-        // filtro de tipo de clínica
-        if (currentFilter === "uti") {
-          return (p.clinicaAtual || "").toLowerCase().includes("uti");
-        }
-        if (currentFilter === "enfermaria") {
-          const clin = (p.clinicaAtual || "").toLowerCase();
-          return clin.includes("enferm") || clin.includes("enf");
-        }
-        if (currentFilter === "emergencia") {
-          return (p.origem || "").toLowerCase().includes("emerg");
-        }
-        return true;
-      });
-
-      renderPatients(filtered);
-    }
-
-    function updateSummaries() {
-      const total = allPatients.length;
-      const uti = allPatients.filter((p) =>
-        (p.clinicaAtual || "").toLowerCase().includes("uti")
-      ).length;
-      const emerg = allPatients.filter((p) =>
-        (p.origem || "").toLowerCase().includes("emerg")
-      ).length;
-      const atrasados = allPatients.filter((p) => p.flagAtraso).length;
-
-      document.getElementById("sumTotal").textContent = total || "0";
-      document.getElementById("sumUti").textContent = uti || "0";
-      document.getElementById("sumEmerg").textContent = emerg || "0";
-      document.getElementById("sumAtraso").textContent = atrasados || "0";
-    }
-
-    function renderPatients(list) {
-      const container = document.getElementById("patientsList");
-      const empty = document.getElementById("emptyState");
-
-      container.innerHTML = "";
-
-      if (!list || list.length === 0) {
-        empty.style.display = "block";
+    function onBuscarClick() {
+      const campo = document.getElementById('inputBuscaPront');
+      const v = (campo.value || '').trim();
+      if (!v) {
+        showSearchMessage('Digite um prontuário válido para buscar.');
         return;
-      } else {
-        empty.style.display = "none";
       }
 
-      list.forEach((p) => {
-        const card = document.createElement("div");
-        card.className = "patient-card";
+      showSearchMessage('Buscando dados do paciente…');
 
-        // HEADER
-        const header = document.createElement("div");
-        header.className = "patient-card-header";
+      google.script.run
+        .withSuccessHandler(onSearchResult)
+        .withFailureHandler(err => {
+          console.error(err);
+          showSearchMessage('Erro ao buscar dados. Confira o prontuário ou o script.');
+        })
+        .searchPacientePorProntuario(v);
+    }
 
-        const main = document.createElement("div");
-        main.className = "patient-main";
+    function showSearchMessage(msg) {
+      const container = document.getElementById('searchResultContainer');
+      container.innerHTML = `
+        <div class="search-result-empty">${msg}</div>
+      `;
+      currentSearchPreview = null;
+    }
 
-        const titleLine = document.createElement("div");
-        titleLine.className = "patient-title-line";
+    function onSearchResult(result) {
+      const container = document.getElementById('searchResultContainer');
 
-        const nameEl = document.createElement("span");
-        nameEl.className = "patient-name";
-        nameEl.textContent = p.nome || "Paciente sem nome";
+      if (!result || !result.encontrado) {
+        showSearchMessage('Não encontramos esse prontuário em Geral Interconsultas, Saídas ou Emergência.');
+        return;
+      }
 
-        const prontEl = document.createElement("span");
-        prontEl.className = "patient-pront";
-        prontEl.textContent = `Prontuário ${p.prontuario || "–"}`;
+      currentSearchPreview = result;
 
-        titleLine.appendChild(nameEl);
-        titleLine.appendChild(prontEl);
+      const p = result;
 
-        const metaLine = document.createElement("div");
-        metaLine.className = "patient-meta";
+      container.innerHTML = `
+        <div class="patient-preview">
+          <div class="preview-top">
+            <div class="preview-main">
+              <div class="preview-name-line">
+                <span class="preview-name">${escapeHtml(p.nome || 'Paciente')}</span>
+                <span class="preview-pront">Prontuário ${escapeHtml(p.prontuario || '')}</span>
+              </div>
+              <div class="preview-meta">
+                ${p.idade ? `<span>${p.idade} anos</span>` : ''}
+                ${p.sexo ? `<span>${escapeHtml(p.sexo)}</span>` : ''}
+                ${p.municipio ? `<span>${escapeHtml(p.municipio)}</span>` : ''}
+              </div>
+              <div class="preview-meta">
+                ${p.clinica ? `<span class="pill-tag">${escapeHtml(p.clinica)}</span>` : ''}
+                ${p.origem ? `<span class="pill-tag">${escapeHtml(p.origem)}</span>` : ''}
+                ${p.especialidade ? `<span class="pill-tag">${escapeHtml(p.especialidade)}</span>` : ''}
+              </div>
+            </div>
+            <div>
+              ${p.jaAcompanhado
+                ? '<span class="pill-tag green">Já em acompanhamento</span>'
+                : '<span class="pill-tag amber">Novo para o CP</span>'
+              }
+            </div>
+          </div>
 
-        if (p.idade) {
-          const span = document.createElement("span");
-          span.textContent = `${p.idade} anos`;
-          metaLine.appendChild(span);
+          <div class="preview-timeline">
+            <div class="timeline-block">
+              <div class="timeline-label">Linha do tempo</div>
+              <div class="timeline-value">
+                Solicitação: ${p.dataSolicitacaoLabel || '–'}<br/>
+                Programação: ${p.dataProgramacaoLabel || '–'}<br/>
+                Resposta: ${p.dataRespostaLabel || '–'}
+              </div>
+            </div>
+            <div class="timeline-block">
+              <div class="timeline-label">Outras referências</div>
+              <div class="timeline-value">
+                Última emergência: ${p.dataEmergenciaLabel || '–'}<br/>
+                Última saída: ${p.dataSaidaLabel || '–'} (${p.desfechoSaida || '–'})
+              </div>
+            </div>
+          </div>
+
+          <div class="preview-actions">
+            <button class="btn-primary" onclick="onAdicionarClick()">
+              <span>${p.jaAcompanhado ? 'Atualizar acompanhamento' : 'Adicionar ao acompanhamento'}</span>
+              <span>➕</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function onAdicionarClick() {
+      if (!currentSearchPreview || !currentSearchPreview.prontuario) return;
+
+      const pront = currentSearchPreview.prontuario;
+
+      google.script.run
+        .withSuccessHandler(msg => {
+          showToast(msg || 'Acompanhamento registrado.');
+          refreshAcompanhamentos();
+        })
+        .withFailureHandler(err => {
+          console.error(err);
+          showToast('Erro ao salvar acompanhamento.');
+        })
+        .adicionarOuAtualizarAcompanhamento(pront);
+    }
+
+    function refreshAcompanhamentos() {
+      document.getElementById('listLoading').style.display = 'block';
+      document.getElementById('activeList').style.display = 'none';
+      document.getElementById('emptyList').style.display = 'none';
+
+      google.script.run
+        .withSuccessHandler(onAcompsLoaded)
+        .withFailureHandler(err => {
+          console.error(err);
+          document.getElementById('listLoading').textContent =
+            'Erro ao carregar acompanhamentos. Confira o script.';
+        })
+        .listarAcompanhamentosAtivos();
+    }
+
+    function onAcompsLoaded(ac) {
+      allAcomps = ac || [];
+      document.getElementById('listLoading').style.display = 'none';
+      if (!allAcomps.length) {
+        document.getElementById('emptyList').style.display = 'block';
+      } else {
+        document.getElementById('activeList').style.display = 'flex';
+      }
+      updateSummaryNumbers();
+      applyFilterAndRender();
+    }
+
+    function applyFilterAndRender() {
+      let lst = allAcomps.slice();
+
+      if (currentFilter === 'uti') {
+        lst = lst.filter(p => (p.clinica || '').toLowerCase().includes('uti'));
+      } else if (currentFilter === 'enfermaria') {
+        const c = (p) => (p.clinica || '').toLowerCase();
+        lst = lst.filter(p => {
+          const x = c(p);
+          return x.includes('enferm') || x.includes('enf') || x.includes('enfermaria');
+        });
+      } else if (currentFilter === 'pendente') {
+        lst = lst.filter(p => p.precisaMoverSerie);
+      }
+
+      renderActiveList(lst);
+    }
+
+    function renderActiveList(list) {
+      const container = document.getElementById('activeList');
+      container.innerHTML = '';
+
+      if (!list.length) {
+        document.getElementById('emptyList').style.display = 'block';
+        return;
+      } else {
+        document.getElementById('emptyList').style.display = 'none';
+      }
+
+      list.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'active-card';
+
+        const header = document.createElement('div');
+        header.className = 'active-card-header';
+
+        const main = document.createElement('div');
+        main.className = 'active-main';
+
+        const line1 = document.createElement('div');
+        line1.className = 'active-line-1';
+
+        const name = document.createElement('span');
+        name.className = 'active-name';
+        name.textContent = p.nome || 'Paciente';
+
+        const pront = document.createElement('span');
+        pront.className = 'active-pront';
+        pront.textContent = `Prontuário ${p.prontuario || ''}`;
+
+        line1.appendChild(name);
+        line1.appendChild(pront);
+
+        const meta = document.createElement('div');
+        meta.className = 'active-meta';
+
+        if (p.idade) meta.appendChild(chipText(`${p.idade} anos`));
+        if (p.clinica) meta.appendChild(chipText(p.clinica));
+        if (p.origem) meta.appendChild(chipText(p.origem));
+        if (p.tempoSolicRespLabel) {
+          const ch = chipText(`Solic → Resp: ${p.tempoSolicRespLabel}`);
+          ch.classList.add(p.flagAtraso ? 'red' : 'green');
+          meta.appendChild(ch);
         }
 
-        if (p.clinicaAtual) {
-          const span = document.createElement("span");
-          span.textContent = p.clinicaAtual;
-          metaLine.appendChild(span);
-        }
+        main.appendChild(line1);
+        main.appendChild(meta);
 
-        if (p.diagnostico) {
-          const span = document.createElement("span");
-          span.textContent = p.diagnostico;
-          metaLine.appendChild(span);
-        }
-
-        if (p.tempoSolicRespostaLabel) {
-          const chip = document.createElement("span");
-          chip.className = "chip " + (p.flagAtraso ? "badge-critical" : "badge-ok");
-          chip.textContent = `Solic → Resp: ${p.tempoSolicRespostaLabel}`;
-          metaLine.appendChild(chip);
-        }
-
-        main.appendChild(titleLine);
-        main.appendChild(metaLine);
-
-        const chevron = document.createElement("div");
-        chevron.className = "card-chevron";
-        chevron.textContent = "›";
+        const chev = document.createElement('div');
+        chev.className = 'chevron';
+        chev.textContent = '›';
 
         header.appendChild(main);
-        header.appendChild(chevron);
+        header.appendChild(chev);
 
-        // BODY
-        const body = document.createElement("div");
-        body.className = "patient-card-body";
+        const body = document.createElement('div');
+        body.className = 'active-body';
 
-        const grid = document.createElement("div");
-        grid.className = "body-grid";
+        const grid = document.createElement('div');
+        grid.className = 'active-body-grid';
 
-        // Bloco 1 – Linha do tempo
-        const col1 = document.createElement("div");
-        const title1 = document.createElement("div");
-        title1.className = "section-title";
-        title1.textContent = "Linha do tempo";
+        const col1 = document.createElement('div');
+        const col2 = document.createElement('div');
+        const col1Title = document.createElement('div');
+        col1Title.className = 'section-label';
+        col1Title.textContent = 'Linha do tempo';
+        const col2Title = document.createElement('div');
+        col2Title.className = 'section-label';
+        col2Title.textContent = 'Situação';
 
-        const list1 = document.createElement("ul");
-        list1.className = "info-list";
+        const list1 = document.createElement('ul');
+        list1.className = 'info-list';
+        list1.appendChild(infoItem('Solicitação', p.dataSolicitacaoLabel));
+        list1.appendChild(infoItem('Programação', p.dataProgramacaoLabel));
+        list1.appendChild(infoItem('Resposta', p.dataRespostaLabel));
+        list1.appendChild(infoItem('Última emergência', p.dataEmergenciaLabel));
 
-        list1.appendChild(makeInfoItem("Admissão", p.dataAdmissaoLabel));
-        list1.appendChild(makeInfoItem("Solicitação", p.dataSolicitacaoLabel));
-        list1.appendChild(makeInfoItem("Programação", p.dataProgramacaoLabel));
-        list1.appendChild(makeInfoItem("Resposta", p.dataRespostaLabel));
-        list1.appendChild(makeInfoItem("Última emergência", p.dataEmergenciaLabel));
+        const list2 = document.createElement('ul');
+        list2.className = 'info-list';
+        list2.appendChild(infoItem('Origem', p.origem));
+        list2.appendChild(infoItem('Município', p.municipio));
+        list2.appendChild(infoItem('Tempo Solic → Resp', p.tempoSolicRespLabel));
+        list2.appendChild(infoItem('Desfecho detectado', p.desfechoDetectadoLabel || 'ENCONTRA-SE INTERNADO'));
 
-        col1.appendChild(title1);
+        col1.appendChild(col1Title);
         col1.appendChild(list1);
-
-        // Bloco 2 – Situação do caso
-        const col2 = document.createElement("div");
-        const title2 = document.createElement("div");
-        title2.className = "section-title";
-        title2.textContent = "Situação";
-
-        const list2 = document.createElement("ul");
-        list2.className = "info-list";
-
-        list2.appendChild(makeInfoItem("Origem", p.origem));
-        list2.appendChild(makeInfoItem("Município", p.municipio));
-        list2.appendChild(makeInfoItem("Tempo Adm → Solic", p.tempoAdmSolicLabel));
-        list2.appendChild(
-          makeInfoItem("Tempo Solic → Resp", p.tempoSolicRespostaLabel)
-        );
-        list2.appendChild(makeInfoItem("Desfecho calculado", p.desfechoLabel));
-
-        col2.appendChild(title2);
+        col2.appendChild(col2Title);
         col2.appendChild(list2);
 
         grid.appendChild(col1);
@@ -701,43 +1054,96 @@
 
         body.appendChild(grid);
 
-        // TAGS extras
-        const tagsRow = document.createElement("div");
-        tagsRow.className = "tag-row";
-
-        const tagInternado = document.createElement("span");
-        tagInternado.className = "chip badge-ok";
-        tagInternado.textContent = "ENCONTRA-SE INTERNADO";
-        tagsRow.appendChild(tagInternado);
-
-        if (p.flagAtraso) {
-          const tagAtraso = document.createElement("span");
-          tagAtraso.className = "chip badge-warn";
-          tagAtraso.textContent = "> 48h sem resposta";
-          tagsRow.appendChild(tagAtraso);
+        if (p.precisaMoverSerie) {
+          const banner = document.createElement('div');
+          banner.className = 'pending-banner';
+          banner.innerHTML = `
+            <span>
+              <strong>Desfecho detectado:</strong> ${escapeHtml(p.desfechoDetectadoLabel || '—')} em ${escapeHtml(p.dataDesfechoLabel || '')}.
+              Mover para a Série Histórica?
+            </span>
+          `;
+          const btn = document.createElement('button');
+          btn.textContent = 'Mover agora';
+          btn.addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            moverParaSerie(p.prontuario);
+          });
+          banner.appendChild(btn);
+          body.appendChild(banner);
         }
-
-        body.appendChild(tagsRow);
 
         card.appendChild(header);
         card.appendChild(body);
 
-        card.addEventListener("click", () => {
-          card.classList.toggle("expanded");
+        card.addEventListener('click', () => {
+          card.classList.toggle('expanded');
         });
 
         container.appendChild(card);
       });
     }
 
-    function makeInfoItem(label, value) {
-      const li = document.createElement("li");
-      const spanLabel = document.createElement("span");
-      spanLabel.className = "label";
-      spanLabel.textContent = label + ": ";
-      li.appendChild(spanLabel);
-      li.appendChild(document.createTextNode(value || "–"));
+    function moverParaSerie(pront) {
+      if (!pront) return;
+      const ok = confirm('Confirmar movimentação deste paciente para a Série Histórica?');
+      if (!ok) return;
+
+      google.script.run
+        .withSuccessHandler(msg => {
+          showToast(msg || 'Paciente movido para a série histórica.');
+          refreshAcompanhamentos();
+        })
+        .withFailureHandler(err => {
+          console.error(err);
+          showToast('Erro ao mover para a série histórica.');
+        })
+        .moverParaSerieHistorica(pront);
+    }
+
+    function updateSummaryNumbers() {
+      const total = allAcomps.length;
+      const uti = allAcomps.filter(p => (p.clinica || '').toLowerCase().includes('uti')).length;
+      const pend = allAcomps.filter(p => p.precisaMoverSerie).length;
+      const atras = allAcomps.filter(p => p.flagAtraso).length;
+
+      document.getElementById('sumTotal').textContent = total || 0;
+      document.getElementById('sumUti').textContent = uti || 0;
+      document.getElementById('sumPendencias').textContent = pend || 0;
+      document.getElementById('sumAtraso').textContent = atras || 0;
+    }
+
+    function chipText(text) {
+      const span = document.createElement('span');
+      span.className = 'chip';
+      span.textContent = text;
+      return span;
+    }
+
+    function infoItem(label, value) {
+      const li = document.createElement('li');
+      const sl = document.createElement('span');
+      sl.className = 'label';
+      sl.textContent = label + ': ';
+      li.appendChild(sl);
+      li.appendChild(document.createTextNode(value || '–'));
       return li;
+    }
+
+    function showToast(msg) {
+      if (!msg) return;
+      // solução simples: alert. Depois se quiser, fazemos toast bonitinho.
+      alert(msg);
+    }
+
+    function escapeHtml(str) {
+      if (!str && str !== 0) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
     }
   </script>
 </body>
