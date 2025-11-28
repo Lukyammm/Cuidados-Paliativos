@@ -1,311 +1,480 @@
-/***** CONFIGURAÇÃO BÁSICA *****/
-const GERAL_SHEET_NAME   = 'Geral Interconsultas';
-const SAIDAS_SHEET_NAME  = 'Saídas';
-const EMERG_SHEET_NAME   = 'Emergência';
+/*******************************************************************************************
+ *  CP · HUC – WEBAPP BACKEND (versão Apple Health)
+ *  Compatível com HTML fornecido por Luky
+ *  Funções expostas ao front-end:
+ *     - searchPacientePorProntuario
+ *     - adicionarOuAtualizarAcompanhamento
+ *     - listarAcompanhamentosAtivos
+ *     - moverParaSerieHistorica
+ *******************************************************************************************/
 
-/**
- * IMPORTANTE:
- * Ajuste os índices de colunas abaixo conforme sua planilha.
- * A contagem é 1 = coluna A, 2 = B, etc.
- *
- * Estes índices são um CHUTE razoável baseado nas conversas.
- * Se algo vier vazio no webapp, é só ajustar aqui.
- */
 
-/** GERAL INTERCONSULTAS (fonte principal) */
-const COL_GERAL_PRONT      = 5;  // Ex: coluna E = nº prontuário
-const COL_GERAL_NOME       = 6;  // Ex: F = nome
-const COL_GERAL_IDADE      = 7;  // Ex: G = idade
-const COL_GERAL_CLINICA    = 8;  // Ex: H = clínica atual
-const COL_GERAL_DIAG       = 9;  // Ex: I = diagnóstico
-const COL_GERAL_ORIGEM     = 10; // Ex: J = origem
-const COL_GERAL_MUNICIPIO  = 11; // se existir
-const COL_GERAL_ADMISSAO   = 12; // data de admissão
-const COL_GERAL_SOLIC      = 13; // data solicitação
-const COL_GERAL_PROG       = 14; // data programação
-const COL_GERAL_RESP       = 15; // data resposta
+/**************************************
+ * BASES OFICIAIS
+ **************************************/
+const ABA_GERAL   = 'Geral Interconsultas';
+const ABA_SAIDAS  = 'Saídas';
+const ABA_EMERG   = 'Emergência';
 
-/** SAÍDAS */
-const COL_SAIDAS_PRONT     = 1;  // A = nº prontuário
-const COL_SAIDAS_DATA      = 13; // M = data saída
-const COL_SAIDAS_DESFECHO  = 17; // Q = desfecho
-const COL_SAIDAS_LOCAL     = 18; // R (se tiver)
+const ABA_ATIVOS  = 'Acompanhamento_Ativo';
+const ABA_HIST    = 'Acompanhamento_Historico';
+const ABA_LOGS    = 'CP_Logs';
 
-/** EMERGÊNCIA */
-const COL_EMERG_PRONT      = 1;  // A = nº prontuário
-const COL_EMERG_DATA       = 15; // O = data passagem na emergência (ajuste se precisar)
-
-/**
- * Desfechos que consideramos "finais" (paciente não é mais internado ativo)
- */
-const FINAL_DESFECHOS = [
-  'Residência',
-  'Óbito',
-  'Outro hospital',
-  'Alta',
-  'Alta hospitalar',
-  'Transferência interna',
-  'Transferência externa'
+/**************************************
+ * DESFECHOS DEFINITIVOS
+ **************************************/
+const DESFECHOS_FINAIS = [
+  "Óbito",
+  "Obito",
+  "Alta",
+  "Alta Hospitalar",
+  "Outro hospital",
+  "Residência",
+  "Residencia",
+  "Transferência interna",
+  "Transferência externa"
 ];
 
-/***** WEBAPP *****/
+
 function doGet(e) {
   return HtmlService.createHtmlOutputFromFile('Index')
-    .setTitle('Cuidados Paliativos – Pacientes Atuais')
-    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
+    .setTitle("CP · Painel de Acompanhamento");
 }
 
-/**
- * Retorna a lista de pacientes ATIVOS (internados) para o webapp.
- * Usa apenas: Geral Interconsultas, Saídas e Emergência.
- */
-function getActivePatients() {
+
+/*******************************************************************************************
+ * GARANTIR ABAS
+ *******************************************************************************************/
+function garantirAbas() {
   const ss = SpreadsheetApp.getActive();
 
-  const geral = ss.getSheetByName(GERAL_SHEET_NAME);
-  const saidas = ss.getSheetByName(SAIDAS_SHEET_NAME);
-  const emerg = ss.getSheetByName(EMERG_SHEET_NAME);
-
-  if (!geral || !saidas || !emerg) {
-    throw new Error('Verifique se as abas "Geral Interconsultas", "Saídas" e "Emergência" existem.');
+  if (!ss.getSheetByName(ABA_ATIVOS)) {
+    const sh = ss.insertSheet(ABA_ATIVOS);
+    sh.getRange("A1:L1").setValues([[
+      "Prontuario",
+      "Nome",
+      "Idade",
+      "Clinica",
+      "Origem",
+      "Municipio",
+      "Data_Insercao",
+      "Inserido_Por",
+      "Status_CP",
+      "Desfecho_Detectado",
+      "Data_Desfecho",
+      "Local_Desfecho"
+    ]]);
   }
 
-  const geralData = getValuesWithoutEmptyTail(geral);
-  const saidasData = getValuesWithoutEmptyTail(saidas);
-  const emergData = getValuesWithoutEmptyTail(emerg);
+  if (!ss.getSheetByName(ABA_HIST)) {
+    const sh = ss.insertSheet(ABA_HIST);
+    sh.getRange("A1:L1").setValues([[
+      "Prontuario",
+      "Nome",
+      "Idade",
+      "Clinica",
+      "Origem",
+      "Municipio",
+      "Data_Insercao",
+      "Data_Encerramento",
+      "Desfecho",
+      "Local_Desfecho",
+      "Movido_Por",
+      "Movido_Em"
+    ]]);
+  }
 
-  // Mapas auxiliares
-  const saidasMap = buildSaidasMap(saidasData);
-  const emergMap = buildEmergMap(emergData);
+  if (!ss.getSheetByName(ABA_LOGS)) {
+    const sh = ss.insertSheet(ABA_LOGS);
+    sh.getRange("A1:E1").setValues([[
+      "Timestamp",
+      "Usuario",
+      "Acao",
+      "Prontuario",
+      "Detalhes"
+    ]]);
+  }
+}
 
-  const pacientes = [];
 
-  // Assumindo que a primeira linha é cabeçalho
-  for (let i = 1; i < geralData.length; i++) {
-    const row = geralData[i];
+/*******************************************************************************************
+ * LOG
+ *******************************************************************************************/
+function logAcao(acao, pront, detalhes) {
+  const ss = SpreadsheetApp.getActive();
+  garantirAbas();
+  const sh = ss.getSheetByName(ABA_LOGS);
+  sh.appendRow([
+    new Date(),
+    Session.getActiveUser().getEmail() || "desconhecido",
+    acao,
+    pront,
+    detalhes || ""
+  ]);
+}
 
-    const pront = (row[COL_GERAL_PRONT - 1] || '').toString().trim();
+
+/*******************************************************************************************
+ * FUNÇÃO 1 — Buscar paciente por prontuário
+ *******************************************************************************************/
+function searchPacientePorProntuario(pront) {
+  garantirAbas();
+
+  const ss = SpreadsheetApp.getActive();
+  const shG = ss.getSheetByName(ABA_GERAL);
+  const shS = ss.getSheetByName(ABA_SAIDAS);
+  const shE = ss.getSheetByName(ABA_EMERG);
+  const shA = ss.getSheetByName(ABA_ATIVOS);
+
+  const prontStr = String(pront).trim();
+
+  let geral = shG.getDataRange().getValues();
+  let saidas = shS.getDataRange().getValues();
+  let emerg = shE.getDataRange().getValues();
+  let ativos = shA.getDataRange().getValues();
+
+  let encontradoGeral = null;
+  let ultimaSaida = null;
+  let ultimaEmerg = null;
+
+  for (let i = 1; i < geral.length; i++) {
+    if (String(geral[i][4]).trim() == prontStr) {
+      encontradoGeral = geral[i];
+      break;
+    }
+  }
+
+  for (let i = 1; i < saidas.length; i++) {
+    if (String(saidas[i][0]).trim() == prontStr) {
+      const d = parseDate(saidas[i][13]);
+      if (!ultimaSaida || d > ultimaSaida.data) {
+        ultimaSaida = {
+          data: d,
+          label: formatDate(d),
+          desfecho: saidas[i][16] || "",
+          local: saidas[i][14] || ""
+        };
+      }
+    }
+  }
+
+  for (let i = 1; i < emerg.length; i++) {
+    if (String(emerg[i][0]).trim() == prontStr) {
+      const d = parseDate(emerg[i][14]);
+      if (!ultimaEmerg || d > ultimaEmerg) ultimaEmerg = d;
+    }
+  }
+
+  const jaAcompanhado = ativos.some(r => String(r[0]).trim() == prontStr);
+
+  if (!encontradoGeral && !ultimaSaida && !ultimaEmerg) {
+    return { encontrado: false };
+  }
+
+  const nome = encontradoGeral ? encontradoGeral[5] : "";
+  const dataNasc = encontradoGeral ? parseDate(encontradoGeral[6]) : null;
+  const idade = dataNasc ? calcIdade(dataNasc) : "";
+
+  const clinica = encontradoGeral ? encontradoGeral[3] : "";
+  const origem = encontradoGeral ? encontradoGeral[2] : "";
+  const dataSolic = encontradoGeral ? parseDate(encontradoGeral[0]) : null;
+  const dataProg = encontradoGeral ? parseDate(encontradoGeral[9]) : null;
+  const dataResp = encontradoGeral ? parseDate(encontradoGeral[10]) : null;
+  const sexo = "";  
+  const municipio = "";
+
+  return {
+    encontrado: true,
+    prontuario: prontStr,
+    nome,
+    idade,
+    sexo,
+    municipio,
+    clinica,
+    origem,
+    especialidade: encontradoGeral ? encontradoGeral[8] : "",
+
+    dataSolicitacaoLabel: formatDate(dataSolic),
+    dataProgramacaoLabel: formatDate(dataProg),
+    dataRespostaLabel: formatDate(dataResp),
+
+    dataEmergenciaLabel: ultimaEmerg ? formatDate(ultimaEmerg) : "–",
+
+    dataSaidaLabel: ultimaSaida ? ultimaSaida.label : "–",
+    desfechoSaida: ultimaSaida ? ultimaSaida.desfecho : "",
+
+    jaAcompanhado
+  };
+}
+
+
+/*******************************************************************************************
+ * FUNÇÃO 2 — Adicionar / atualizar acompanhamento
+ *******************************************************************************************/
+function adicionarOuAtualizarAcompanhamento(pront) {
+  garantirAbas();
+
+  const ss = SpreadsheetApp.getActive();
+  const shA = ss.getSheetByName(ABA_ATIVOS);
+  let dados = shA.getDataRange().getValues();
+
+  const prontStr = String(pront).trim();
+
+  for (let i = 1; i < dados.length; i++) {
+    if (String(dados[i][0]).trim() == prontStr) {
+      shA.getRange(i + 1, 9).setValue("Ativo");
+      shA.getRange(i + 1, 12).setValue(new Date());
+      logAcao("Atualizou", prontStr, "Atualização do acompanhamento");
+      return "Acompanhamento atualizado.";
+    }
+  }
+
+  const info = searchPacientePorProntuario(prontStr);
+  if (!info || !info.encontrado) return "Paciente não encontrado.";
+
+  shA.appendRow([
+    info.prontuario,
+    info.nome,
+    info.idade,
+    info.clinica,
+    info.origem,
+    info.municipio,
+    new Date(),
+    Session.getActiveUser().getEmail() || "desconhecido",
+    "Ativo",
+    "",
+    "",
+    "",
+  ]);
+
+  logAcao("Novo", prontStr, "Inserido no acompanhamento");
+  return "Paciente adicionado ao acompanhamento.";
+}
+
+
+/*******************************************************************************************
+ * FUNÇÃO 3 — Listar acompanhamentos ativos
+ *******************************************************************************************/
+function listarAcompanhamentosAtivos() {
+  garantirAbas();
+
+  const ss = SpreadsheetApp.getActive();
+
+  const geral = ss.getSheetByName(ABA_GERAL).getDataRange().getValues();
+  const saidas = ss.getSheetByName(ABA_SAIDAS).getDataRange().getValues();
+  const emerg = ss.getSheetByName(ABA_EMERG).getDataRange().getValues();
+  const atvs = ss.getSheetByName(ABA_ATIVOS).getDataRange().getValues();
+
+  let lista = [];
+
+  for (let i = 1; i < atvs.length; i++) {
+    const row = atvs[i];
+    const pront = String(row[0]).trim();
     if (!pront) continue;
 
-    const nome = safeString(row[COL_GERAL_NOME - 1]);
-    const idade = row[COL_GERAL_IDADE - 1] || '';
-    const clinica = safeString(row[COL_GERAL_CLINICA - 1]);
-    const diag = safeString(row[COL_GERAL_DIAG - 1]);
-    const origem = safeString(row[COL_GERAL_ORIGEM - 1]);
-    const municipio = safeString(row[COL_GERAL_MUNICIPIO - 1]);
+    const geralInfo = buscarNaGeral(geral, pront);
+    const saidaInfo = buscarSaida(saidas, pront);
+    const emergInfo = buscarEmerg(emerg, pront);
 
-    const dataAdmissao = parseDateOrNull(row[COL_GERAL_ADMISSAO - 1]);
-    const dataSolic = parseDateOrNull(row[COL_GERAL_SOLIC - 1]);
-    const dataProg = parseDateOrNull(row[COL_GERAL_PROG - 1]);
-    const dataResp = parseDateOrNull(row[COL_GERAL_RESP - 1]);
+    const idade = geralInfo.dataNasc ? calcIdade(geralInfo.dataNasc) : row[2];
 
-    // Verifica saídas desse prontuário
-    const saidasPaciente = saidasMap.get(pront) || [];
-    const final = getFinalDesfecho(saidasPaciente);
+    let precisaMover = false;
+    let desfechoLabel = "";
+    let dataDesfechoLabel = "";
 
-    // Se tiver desfecho final => não está mais internado
-    if (final) {
-      continue;
+    if (saidaInfo && saidaInfo.desfecho) {
+      if (DESFECHOS_FINAIS.some(d => d.toLowerCase() == saidaInfo.desfecho.toLowerCase())) {
+        precisaMover = true;
+        desfechoLabel = saidaInfo.desfecho;
+        dataDesfechoLabel = formatDate(saidaInfo.dataSaida);
+      }
     }
 
-    // Última emergência
-    const dataEmerg = emergMap.get(pront) || null;
+    const tempoSolicResp = gerarDiferenca(geralInfo.dataSolic, geralInfo.dataResp);
 
-    // Cálculos de tempo
-    const tempoAdmSolic = (dataAdmissao && dataSolic) ? (dataSolic.getTime() - dataAdmissao.getTime()) : null;
-    const tempoSolicResp = (dataSolic && dataResp) ? (dataResp.getTime() - dataSolic.getTime()) : null;
-
-    const tempoAdmSolicLabel = tempoAdmSolic != null ? formatDuration(tempoAdmSolic) : '';
-    const tempoSolicRespLabel = tempoSolicResp != null ? formatDuration(tempoSolicResp) : '';
-
-    // Flag atraso > 48h (para tempo Solic -> Resp)
-    const flagAtraso = tempoSolicResp != null && (tempoSolicResp > 48 * 3600 * 1000);
-
-    const paciente = {
+    lista.push({
       prontuario: pront,
-      nome: nome,
-      idade: idade ? idade.toString() : '',
-      clinicaAtual: clinica,
-      diagnostico: diag,
-      origem: origem,
-      municipio: municipio,
+      nome: geralInfo.nome || row[1],
+      idade,
+      clinica: geralInfo.clinica,
+      origem: geralInfo.origem,
+      municipio: geralInfo.municipio,
 
-      dataAdmissao: dataAdmissao ? dataAdmissao.getTime() : null,
-      dataAdmissaoLabel: formatDateForLabel(dataAdmissao),
-      dataSolicitacao: dataSolic ? dataSolic.getTime() : null,
-      dataSolicitacaoLabel: formatDateForLabel(dataSolic),
-      dataProgramacao: dataProg ? dataProg.getTime() : null,
-      dataProgramacaoLabel: formatDateForLabel(dataProg),
-      dataResposta: dataResp ? dataResp.getTime() : null,
-      dataRespostaLabel: formatDateForLabel(dataResp),
+      dataSolicitacaoLabel: formatDate(geralInfo.dataSolic),
+      dataProgramacaoLabel: formatDate(geralInfo.dataProg),
+      dataRespostaLabel: formatDate(geralInfo.dataResp),
 
-      dataEmergencia: dataEmerg ? dataEmerg.getTime() : null,
-      dataEmergenciaLabel: formatDateForLabel(dataEmerg),
+      dataEmergenciaLabel: emergInfo ? formatDate(emergInfo) : "–",
 
-      tempoAdmSolicMs: tempoAdmSolic,
-      tempoAdmSolicLabel: tempoAdmSolicLabel,
-      tempoSolicRespostaMs: tempoSolicResp,
-      tempoSolicRespostaLabel: tempoSolicRespLabel,
+      tempoSolicRespostaLabel: formatTempo(tempoSolicResp),
+      flagAtraso: tempoSolicResp ? tempoSolicResp > 1000 * 60 * 60 * 48 : false,
 
-      desfechoLabel: 'ENCONTRA-SE INTERNADO',
-
-      flagAtraso: flagAtraso
-    };
-
-    pacientes.push(paciente);
+      precisaMoverSerie: precisaMover,
+      desfechoDetectadoLabel: desfechoLabel,
+      dataDesfechoLabel: dataDesfechoLabel
+    });
   }
 
-  // Ordena por nome, só para ficar bonito
-  pacientes.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
-
-  return pacientes;
+  return lista;
 }
 
-/***** FUNÇÕES AUXILIARES *****/
 
-/**
- * Remove "rabo" de linhas totalmente vazias do final.
- */
-function getValuesWithoutEmptyTail(sheet) {
-  const range = sheet.getDataRange();
-  const values = range.getValues();
+/*******************************************************************************************
+ * FUNÇÃO 4 — Mover para série histórica
+ *******************************************************************************************/
+function moverParaSerieHistorica(pront) {
+  garantirAbas();
 
-  let lastNonEmptyRow = values.length - 1;
-  for (; lastNonEmptyRow >= 0; lastNonEmptyRow--) {
-    if (!rowIsEmpty(values[lastNonEmptyRow])) break;
-  }
+  const ss = SpreadsheetApp.getActive();
+  const shA = ss.getSheetByName(ABA_ATIVOS);
+  const shH = ss.getSheetByName(ABA_HIST);
 
-  return values.slice(0, lastNonEmptyRow + 1);
-}
+  let dados = shA.getDataRange().getValues();
+  let alvo = null;
+  let idx = -1;
 
-function rowIsEmpty(row) {
-  return row.every(cell => cell === '' || cell === null);
-}
-
-function safeString(value) {
-  return value == null ? '' : value.toString().trim();
-}
-
-/**
- * Constrói um mapa: prontuário -> array de saídas
- */
-function buildSaidasMap(data) {
-  const map = new Map();
-  for (let i = 1; i < data.length; i++) {
-    const row = data[i];
-    const pront = (row[COL_SAIDAS_PRONT - 1] || '').toString().trim();
-    if (!pront) continue;
-
-    const dataSaida = parseDateOrNull(row[COL_SAIDAS_DATA - 1]);
-    const desfecho = safeString(row[COL_SAIDAS_DESFECHO - 1]);
-    const local = safeString(row[COL_SAIDAS_LOCAL - 1]);
-
-    const obj = {
-      dataSaida,
-      desfecho,
-      local
-    };
-
-    if (!map.has(pront)) {
-      map.set(pront, []);
-    }
-    map.get(pront).push(obj);
-  }
-  return map;
-}
-
-/**
- * Constrói um mapa: prontuário -> ÚLTIMA data de emergência
- */
-function buildEmergMap(data) {
-  const map = new Map();
-  for (let i = 1; i < data.length; i++) {
-    const row = data[i];
-    const pront = (row[COL_EMERG_PRONT - 1] || '').toString().trim();
-    if (!pront) continue;
-
-    const d = parseDateOrNull(row[COL_EMERG_DATA - 1]);
-    if (!d) continue;
-
-    const atual = map.get(pront);
-    if (!atual || d.getTime() > atual.getTime()) {
-      map.set(pront, d);
+  for (let i = 1; i < dados.length; i++) {
+    if (String(dados[i][0]).trim() == pront) {
+      alvo = dados[i];
+      idx = i;
+      break;
     }
   }
-  return map;
+
+  if (!alvo) return "Paciente não encontrado no acompanhamento.";
+
+  shH.appendRow([
+    alvo[0], // pront
+    alvo[1], // nome
+    alvo[2], // idade
+    alvo[3], // clinica
+    alvo[4], // origem
+    alvo[5], // municipio
+    alvo[6], // data insercao
+    new Date(),
+    alvo[9], // desfecho
+    alvo[11], // local
+    Session.getActiveUser().getEmail() || "desconhecido",
+    new Date()
+  ]);
+
+  shA.deleteRow(idx + 1);
+
+  logAcao("Mover", pront, "Movido para série histórica");
+  return "Movido para a série histórica.";
 }
 
-/**
- * Dado um array de saídas, verifica se existe um desfecho "final".
- */
-function getFinalDesfecho(saidasArr) {
-  if (!saidasArr || !saidasArr.length) return null;
-  for (let i = 0; i < saidasArr.length; i++) {
-    const s = saidasArr[i];
-    const d = (s.desfecho || '').toString().trim().toLowerCase();
-    const isFinal = FINAL_DESFECHOS.some(fd => d === fd.toLowerCase());
-    if (isFinal) return s;
+
+/*******************************************************************************************
+ * FUNÇÕES AUXILIARES
+ *******************************************************************************************/
+function buscarNaGeral(geral, pront) {
+  for (let i = 1; i < geral.length; i++) {
+    if (String(geral[i][4]).trim() == pront) {
+      return {
+        nome: geral[i][5],
+        dataNasc: parseDate(geral[i][6]),
+        clinica: geral[i][3],
+        origem: geral[i][2],
+        municipio: "",
+        dataSolic: parseDate(geral[i][0]),
+        dataProg: parseDate(geral[i][9]),
+        dataResp: parseDate(geral[i][10])
+      };
+    }
+  }
+  return {
+    nome: "",
+    dataNasc: null,
+    clinica: "",
+    origem: "",
+    municipio: "",
+    dataSolic: null,
+    dataProg: null,
+    dataResp: null
+  };
+}
+
+function buscarSaida(saidas, pront) {
+  let ultima = null;
+
+  for (let i = 1; i < saidas.length; i++) {
+    if (String(saidas[i][0]).trim() == pront) {
+      const d = parseDate(saidas[i][13]);
+      if (!ultima || d > ultima.dataSaida) {
+        ultima = {
+          dataSaida: d,
+          desfecho: saidas[i][16] || "",
+          local: saidas[i][14] || ""
+        };
+      }
+    }
+  }
+  return ultima;
+}
+
+function buscarEmerg(emerg, pront) {
+  let ultima = null;
+
+  for (let i = 1; i < emerg.length; i++) {
+    if (String(emerg[i][0]).trim() == pront) {
+      const d = parseDate(emerg[i][14]);
+      if (!ultima || d > ultima) ultima = d;
+    }
+  }
+  return ultima;
+}
+
+/********************* DATE UTILS ************************/
+function parseDate(v) {
+  if (!v) return null;
+
+  if (v instanceof Date) return v;
+
+  if (typeof v === "string") {
+    const p = v.split(/[\/\-]/);
+    if (p.length === 3) {
+      const d = parseInt(p[0]);
+      const m = parseInt(p[1]) - 1;
+      const y = parseInt(p[2]);
+      return new Date(y, m, d);
+    }
   }
   return null;
 }
 
-/**
- * Tenta interpretar um valor como Date.
- */
-function parseDateOrNull(value) {
-  if (!value) return null;
-  if (Object.prototype.toString.call(value) === '[object Date]' && !isNaN(value)) {
-    return value;
-  }
-  // Se vier como string dd/mm/aaaa
-  if (typeof value === 'string') {
-    const parts = value.split(/[\/\-]/);
-    if (parts.length === 3) {
-      const d = parseInt(parts[0], 10);
-      const m = parseInt(parts[1], 10) - 1;
-      const y = parseInt(parts[2], 10);
-      const dt = new Date(y, m, d);
-      if (!isNaN(dt)) return dt;
-    }
-  }
-  return null;
-}
-
-/**
- * Formata duração (ms) em:
- * - < 1h => "X min"
- * - >= 1h e < 24h => "X h"
- * - >= 24h => "Xd Yh"
- */
-function formatDuration(ms) {
-  if (ms == null) return '';
-  if (ms < 0) return '';
-
-  const totalMinutes = Math.round(ms / 60000);
-  if (totalMinutes < 60) {
-    return totalMinutes + ' min';
-  }
-
-  const totalHours = Math.floor(ms / 3600000);
-  if (totalHours < 24) {
-    return totalHours + ' h';
-  }
-
-  const days = Math.floor(totalHours / 24);
-  const hours = totalHours % 24;
-  if (hours === 0) {
-    return days + ' d';
-  }
-  return days + ' d ' + hours + ' h';
-}
-
-/**
- * Formata data no padrão dd/mm/aaaa.
- */
-function formatDateForLabel(date) {
-  if (!date) return '';
-  const d = date.getDate().toString().padStart(2, '0');
-  const m = (date.getMonth() + 1).toString().padStart(2, '0');
-  const y = date.getFullYear();
+function formatDate(dt) {
+  if (!dt) return "–";
+  let d = dt.getDate().toString().padStart(2, "0");
+  let m = (dt.getMonth() + 1).toString().padStart(2, "0");
+  let y = dt.getFullYear();
   return `${d}/${m}/${y}`;
+}
+
+function calcIdade(n) {
+  const hoje = new Date();
+  let idade = hoje.getFullYear() - n.getFullYear();
+  const m = hoje.getMonth() - n.getMonth();
+  if (m < 0 || (m === 0 && hoje.getDate() < n.getDate())) idade--;
+  return idade;
+}
+
+function gerarDiferenca(a, b) {
+  if (!a || !b) return null;
+  return b.getTime() - a.getTime();
+}
+
+function formatTempo(ms) {
+  if (!ms) return null;
+
+  const min = Math.floor(ms / 60000);
+  if (min < 60) return `${min} min`;
+
+  const h = Math.floor(ms / 3600000);
+  if (h < 24) return `${h} h`;
+
+  const d = Math.floor(h / 24);
+  const hh = h % 24;
+  return `${d} d ${hh} h`;
 }
