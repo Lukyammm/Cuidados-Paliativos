@@ -292,6 +292,8 @@ function listarAcompanhamentosAtivos() {
     }
 
     const tempoSolicResp = gerarDiferenca(geralInfo.dataSolic, geralInfo.dataResp);
+    const statusCp = row[8] || "Ativo";
+    const dataInsercao = row[6] ? parseDate(row[6]) || row[6] : null;
 
     lista.push({
       prontuario: pront,
@@ -305,9 +307,14 @@ function listarAcompanhamentosAtivos() {
       dataProgramacaoLabel: formatDate(geralInfo.dataProg),
       dataRespostaLabel: formatDate(geralInfo.dataResp),
 
+      dataInsercaoLabel: formatDate(dataInsercao),
+      inseridoPor: row[7] || "",
+      statusCp,
+
       dataEmergenciaLabel: emergInfo ? formatDate(emergInfo) : "–",
 
-      tempoSolicRespostaLabel: formatTempo(tempoSolicResp),
+      tempoSolicRespLabel: formatTempo(tempoSolicResp),
+      tempoSolicRespMs: tempoSolicResp,
       flagAtraso: tempoSolicResp ? tempoSolicResp > 1000 * 60 * 60 * 48 : false,
 
       precisaMoverSerie: precisaMover,
@@ -431,6 +438,10 @@ function parseDate(v) {
   if (!v) return null;
 
   if (v instanceof Date) return v;
+
+  if (typeof v === "number") {
+    return new Date(v);
+  }
 
   if (typeof v === "string") {
     const p = v.split(/[\/\-]/);
