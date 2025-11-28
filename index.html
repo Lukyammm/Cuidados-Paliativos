@@ -294,6 +294,9 @@
     .pending-banner { margin-top: 10px; border: 1px solid #fed7aa; background: #fffbeb; padding: 10px; border-radius: 12px; display: flex; justify-content: space-between; gap: 8px; align-items: center; }
     .pending-banner button { border: none; background: #f59e0b; color: #0f172a; padding: 8px 12px; border-radius: 10px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 18px rgba(245,158,11,0.25); }
 
+    .danger-banner { margin-top: 10px; border: 1px solid #fecdd3; background: #fff1f2; padding: 10px; border-radius: 12px; display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+    .danger-banner button { border: none; background: #f43f5e; color: #fff; padding: 8px 12px; border-radius: 10px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 18px rgba(244,63,94,0.25); }
+
     .empty { color: #475569; text-align: center; padding: 14px; border: 1px dashed var(--border); border-radius: 12px; background: #f8fafc; }
     .loading-dot { display: inline-block; width: 8px; height: 8px; background: var(--accent); border-radius: 999px; animation: pulse 1s infinite; margin-left: 6px; }
 
@@ -679,6 +682,7 @@
         if (p.origem) tags.appendChild(chip(p.origem, 'dark'));
         if (p.statusCp) tags.appendChild(chip(`Status: ${p.statusCp}`, 'green'));
         if (p.tempoSolicRespLabel) tags.appendChild(chip(`Solic → Resp: ${p.tempoSolicRespLabel}`, p.flagAtraso ? 'red' : 'green'));
+        if (p.duplicado) tags.appendChild(chip('Duplicado', 'red'));
         if (p.precisaMoverSerie) tags.appendChild(chip('Mover para histórico', 'amber'));
 
         hMain.appendChild(tags);
@@ -738,6 +742,26 @@
           body.appendChild(banner);
         }
 
+        if (p.duplicado) {
+          const dup = document.createElement('div');
+          dup.className = 'danger-banner';
+          const linhas = (p.linhasDuplicadas || []).join(', ');
+          dup.innerHTML = `
+            <span>
+              <strong>Registro duplicado:</strong> prontuário repetido nas linhas ${linhas || '—'}.
+              Exclua as duplicatas para manter apenas um acompanhamento ativo.
+            </span>
+          `;
+          const btnRemover = document.createElement('button');
+          btnRemover.textContent = 'Excluir este registro';
+          btnRemover.addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            excluirRegistro(p.rowIndex, p.prontuario);
+          });
+          dup.appendChild(btnRemover);
+          body.appendChild(dup);
+        }
+
         card.appendChild(header);
         card.appendChild(body);
 
@@ -764,6 +788,23 @@
           showToast('Erro ao mover para a série histórica.', 'error');
         })
         .moverParaSerieHistorica(pront);
+    }
+
+    function excluirRegistro(rowIndex, prontuario) {
+      if (!rowIndex) return;
+      const ok = confirm(`Confirmar exclusão do registro do prontuário ${prontuario || ''}?`);
+      if (!ok) return;
+
+      google.script.run
+        .withSuccessHandler(msg => {
+          showToast(msg || 'Registro excluído.');
+          refreshAcompanhamentos();
+        })
+        .withFailureHandler(err => {
+          console.error(err);
+          showToast('Erro ao excluir registro.', 'error');
+        })
+        .excluirAcompanhamentoPorLinha(rowIndex);
     }
 
     function updateSummaryNumbers() {
