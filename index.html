@@ -8,20 +8,20 @@
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
     :root {
-      --bg-soft: #f8fafc;
-      --bg-soft-2: #eef2ff;
-      --card-bg: #ffffff;
-      --accent-blue: #3b82f6;
-      --accent-green: #10b981;
-      --accent-amber: #f59e0b;
-      --accent-red: #ef4444;
-      --text-main: #0f172a;
-      --text-muted: #6b7280;
-      --border-subtle: rgba(148, 163, 184, 0.45);
-      --radius-xl: 22px;
-      --radius-pill: 999px;
-      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.10);
-      --shadow-chip: 0 6px 14px rgba(148, 163, 184, 0.30);
+      --bg: #0b1221;
+      --bg-soft: #0f172a;
+      --bg-card: #0d1a2b;
+      --card: #0f172a;
+      --card-2: #0b1221;
+      --border: rgba(226, 232, 240, 0.12);
+      --muted: #94a3b8;
+      --text: #e2e8f0;
+      --accent: #38bdf8;
+      --accent-2: #22c55e;
+      --amber: #f59e0b;
+      --rose: #fb7185;
+      --radius: 18px;
+      --shadow: 0 20px 55px rgba(15, 23, 42, 0.35);
     }
 
     * {
@@ -29,763 +29,440 @@
       margin: 0;
       padding: 0;
       font-family: "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
     }
 
     body {
-      background: radial-gradient(circle at top left, #dbeafe, #f9fafb 40%, #f0fdf4);
-      color: var(--text-main);
+      background: radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.18), transparent 26%),
+                  radial-gradient(circle at 80% 0%, rgba(34, 197, 94, 0.18), transparent 22%),
+                  linear-gradient(180deg, #0b1221, #0b1526 60%, #0a101c);
       min-height: 100vh;
-      padding: 20px;
+      padding: 22px;
+      color: var(--text);
     }
 
-    .shell {
-      max-width: 1200px;
-      margin: 0 auto 40px;
-    }
+    a { color: inherit; text-decoration: none; }
 
-    /* HEADER ------------------------------------------------------ */
-
-    .top-bar {
+    .page {
+      max-width: 1220px;
+      margin: 0 auto 32px;
       display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .hero {
+      background: linear-gradient(120deg, rgba(56, 189, 248, 0.22), rgba(14, 165, 233, 0.14), rgba(34, 197, 94, 0.1));
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 20% 60%, rgba(255,255,255,0.05), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-top {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 18px;
     }
 
-    .brand-area {
+    .brand {
       display: flex;
+      gap: 12px;
       align-items: center;
-      gap: 10px;
     }
 
     .brand-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 12px;
-      background: linear-gradient(145deg, #22c55e, #3b82f6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #f9fafb;
-      font-size: 0.9rem;
-      font-weight: 700;
-      box-shadow: var(--shadow-chip);
-    }
-
-    .brand-text {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
+      width: 46px;
+      height: 46px;
+      border-radius: 15px;
+      background: linear-gradient(135deg, #22c55e, #0ea5e9);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      color: #0b1221;
+      box-shadow: 0 12px 30px rgba(34, 197, 94, 0.45);
     }
 
     .brand-text span.title {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: 700;
       letter-spacing: 0.02em;
     }
 
     .brand-text span.subtitle {
-      font-size: 0.75rem;
-      color: var(--text-muted);
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      font-size: 0.85rem;
+      color: var(--muted);
     }
 
-    .top-controls {
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      background: rgba(226,232,240,0.1);
+      border: 1px solid var(--border);
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      font-size: 0.83rem;
+      color: var(--muted);
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .last-refresh { color: var(--muted); font-size: 0.85rem; }
+
+    .toolbar {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
+      margin-top: 12px;
       align-items: center;
     }
 
     .search-field {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 7px 14px;
-      border-radius: var(--radius-pill);
-      background: rgba(255, 255, 255, 0.9);
-      border: 1px solid var(--border-subtle);
-      box-shadow: 0 8px 18px rgba(148, 163, 184, 0.25);
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border);
+      flex: 1;
+      min-width: 260px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
     }
 
     .search-field input {
-      border: none;
       background: transparent;
+      border: none;
       outline: none;
-      font-size: 0.85rem;
-      min-width: 160px;
+      font-size: 0.95rem;
+      width: 100%;
+      color: var(--text);
     }
 
     .search-field button {
       border: none;
-      border-radius: var(--radius-pill);
-      padding: 5px 11px;
-      background: var(--accent-blue);
-      color: #f9fafb;
-      font-size: 0.8rem;
-      font-weight: 600;
+      border-radius: 12px;
+      padding: 9px 14px;
+      background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+      color: #0b1221;
+      font-weight: 700;
       cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      box-shadow: 0 10px 18px rgba(59, 130, 246, 0.4);
-      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      box-shadow: 0 10px 26px rgba(14,165,233,0.45);
+      transition: transform 120ms ease, box-shadow 120ms ease;
     }
 
-    .search-field button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 14px 26px rgba(59, 130, 246, 0.55);
-    }
+    .search-field button:hover { transform: translateY(-1px); box-shadow: 0 14px 32px rgba(14,165,233,0.55); }
 
-    .filter-group {
+    .filters {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 8px;
     }
 
     .filter-pill {
-      border-radius: var(--radius-pill);
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      padding: 5px 10px;
-      font-size: 0.75rem;
-      background: rgba(248, 250, 252, 0.8);
-      color: #475569;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      border-radius: 12px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--muted);
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 120ms ease;
+      font-size: 0.85rem;
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
     }
 
-    .filter-pill span.dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      display: inline-block;
-    }
+    .filter-pill.active { background: rgba(56,189,248,0.16); color: #e0f2fe; border-color: rgba(56,189,248,0.5); box-shadow: 0 6px 18px rgba(56,189,248,0.25); }
+    .filter-pill .dot { width: 8px; height: 8px; border-radius: 999px; background: var(--muted); }
+    .filter-pill[data-filter="uti"] .dot { background: var(--rose); }
+    .filter-pill[data-filter="enfermaria"] .dot { background: var(--accent-2); }
+    .filter-pill[data-filter="pendente"] .dot { background: var(--amber); }
 
-    .filter-pill[data-filter="todos"] span.dot { background: #0f172a; }
-    .filter-pill[data-filter="uti"] span.dot { background: var(--accent-red); }
-    .filter-pill[data-filter="enfermaria"] span.dot { background: var(--accent-green); }
-    .filter-pill[data-filter="pendente"] span.dot { background: var(--accent-amber); }
-
-    .filter-pill.active {
-      background: #0f172a;
-      border-color: transparent;
-      color: #e5e7eb;
-      box-shadow: var(--shadow-chip);
-    }
-    .filter-pill.active span.dot {
-      background: #e5e7eb;
-    }
-
-    @media (max-width: 850px) {
-      .top-bar {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .top-controls {
-        width: 100%;
-        justify-content: space-between;
-      }
-      .search-field {
-        flex: 1;
-      }
-      .search-field input {
-        width: 100%;
-      }
-    }
-
-    /* SUMMARY STRIP ------------------------------------------------------ */
-
-    .summary-strip {
+    .summary-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-
-    @media (max-width: 900px) {
-      .summary-strip {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    @media (max-width: 500px) {
-      .summary-strip {
-        grid-template-columns: minmax(0, 1fr);
-      }
+      gap: 12px;
     }
 
     .summary-card {
-      background: linear-gradient(135deg, #ffffff, #eef2ff);
-      border-radius: 24px;
-      padding: 10px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border: 1px solid rgba(148, 163, 184, 0.55);
-      box-shadow: 0 12px 28px rgba(148, 163, 184, 0.35);
-    }
-
-    .summary-card-label {
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: var(--text-muted);
-      margin-bottom: 2px;
-    }
-
-    .summary-card-value {
-      font-size: 1.25rem;
-      font-weight: 700;
-    }
-
-    .summary-card-icon {
-      font-size: 1.25rem;
-      opacity: 0.85;
-    }
-
-    /* MAIN LAYOUT ------------------------------------------------------ */
-
-    .main-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr);
-      gap: 16px;
-      align-items: flex-start;
-    }
-
-    @media (max-width: 950px) {
-      .main-grid {
-        grid-template-columns: minmax(0, 1fr);
-      }
-    }
-
-    .panel {
-      background: rgba(255, 255, 255, 0.92);
-      border-radius: 26px;
-      padding: 16px 16px 18px;
-      box-shadow: var(--shadow-soft);
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      backdrop-filter: blur(14px);
-    }
-
-    .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-      gap: 8px;
-    }
-
-    .panel-title {
-      font-size: 0.95rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .panel-title span.icon {
-      font-size: 0.95rem;
-    }
-
-    .panel-subtitle {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    .badge-soft {
-      font-size: 0.7rem;
-      padding: 3px 10px;
-      border-radius: var(--radius-pill);
-      background: #0f172a;
-      color: #e5e7eb;
-      box-shadow: var(--shadow-chip);
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-
-    /* SEARCH RESULT ------------------------------------------------------ */
-
-    .search-result-empty {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      padding: 8px 10px;
+      background: linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border: 1px solid var(--border);
       border-radius: 18px;
-      background: rgba(248, 250, 252, 0.9);
-      border: 1px dashed rgba(148, 163, 184, 0.55);
-    }
-
-    .patient-preview {
-      margin-top: 6px;
-      border-radius: 24px;
-      padding: 12px 12px 12px;
-      border: 1px solid rgba(209, 213, 219, 0.95);
-      background: radial-gradient(circle at top left, #e0f2fe, #ffffff 40%);
-      box-shadow: var(--shadow-soft);
+      padding: 12px 14px;
+      box-shadow: var(--shadow);
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
       gap: 10px;
     }
 
-    .preview-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      align-items: center;
-    }
+    .summary-card small { color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.75rem; }
+    .summary-card .value { font-size: 1.4rem; font-weight: 800; }
+    .summary-card .trend { font-size: 0.9rem; color: var(--muted); }
 
-    .preview-main {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
+    .panels { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 14px; }
+    .panel { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 16px; box-shadow: var(--shadow); }
+    .panel h2 { font-size: 1rem; display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .panel p { color: var(--muted); font-size: 0.9rem; }
 
-    .preview-name-line {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      align-items: baseline;
-    }
+    .preview-card { margin-top: 10px; border-radius: 14px; padding: 12px; background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.35); }
+    .preview-top { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+    .preview-meta { display: flex; flex-wrap: wrap; gap: 6px; color: var(--muted); font-size: 0.88rem; }
+    .tag { padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,255,255,0.04); font-size: 0.8rem; }
+    .tag.green { border-color: rgba(34,197,94,0.5); color: #bbf7d0; background: rgba(34,197,94,0.08); }
+    .tag.amber { border-color: rgba(245,158,11,0.6); color: #fef3c7; background: rgba(245,158,11,0.08); }
 
-    .preview-name {
-      font-size: 1.02rem;
-      font-weight: 700;
-    }
+    .timeline { margin-top: 10px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .timeline-block { background: rgba(255,255,255,0.04); border: 1px dashed var(--border); padding: 10px; border-radius: 12px; font-size: 0.9rem; color: var(--muted); }
+    .preview-actions { margin-top: 10px; display: flex; justify-content: flex-end; }
+    .btn-primary { border: none; border-radius: 12px; padding: 10px 16px; background: linear-gradient(135deg, #22c55e, #16a34a); color: #052e16; font-weight: 800; cursor: pointer; box-shadow: 0 12px 28px rgba(22,163,74,0.35); }
+    .btn-primary:hover { transform: translateY(-1px); }
 
-    .preview-pront {
-      font-size: 0.78rem;
-      padding: 2px 8px;
-      border-radius: var(--radius-pill);
-      background: rgba(15, 23, 42, 0.06);
-      color: #111827;
-      font-weight: 600;
-    }
+    .panel-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+    .panel-subtitle { color: var(--muted); font-size: 0.9rem; }
 
-    .preview-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      font-size: 0.78rem;
-      color: var(--text-muted);
-    }
+    .list-header { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .sorter { background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 12px; padding: 8px 10px; color: var(--muted); font-size: 0.9rem; }
+    .sorter select { background: transparent; border: none; color: var(--text); font-weight: 600; }
 
-    .pill-tag {
-      padding: 2px 8px;
-      border-radius: var(--radius-pill);
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      font-size: 0.72rem;
-      color: #4b5563;
-      background: rgba(249, 250, 251, 0.92);
-    }
+    .list-wrapper { margin-top: 10px; display: flex; flex-direction: column; gap: 10px; max-height: 560px; overflow-y: auto; padding-right: 4px; }
 
-    .pill-tag.green { border-color: var(--accent-green); color: #047857; }
-    .pill-tag.red { border-color: var(--accent-red); color: #b91c1c; }
-    .pill-tag.amber { border-color: var(--accent-amber); color: #b45309; }
-
-    .preview-timeline {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
-      margin-top: 2px;
-      font-size: 0.78rem;
-    }
-
-    @media (max-width: 700px) {
-      .preview-timeline {
-        grid-template-columns: minmax(0, 1fr);
-      }
-    }
-
-    .timeline-block {
-      padding: 7px 9px;
-      border-radius: 18px;
-      background: rgba(248, 250, 252, 0.85);
-      border: 1px dashed rgba(209, 213, 219, 0.9);
-    }
-
-    .timeline-label {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-muted);
-      margin-bottom: 2px;
-    }
-
-    .timeline-value {
-      font-size: 0.8rem;
-    }
-
-    .preview-actions {
-      margin-top: 3px;
-      display: flex;
-      justify-content: flex-end;
-    }
-
-    .btn-primary {
-      border: none;
-      border-radius: 999px;
-      padding: 7px 16px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      background: #0f172a;
-      color: #e5e7eb;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.45);
-      transition: transform 0.1s ease, box-shadow 0.1s ease;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.55);
-    }
-
-    .small-caption {
-      margin-top: 6px;
-      font-size: 0.7rem;
-      color: var(--text-muted);
-    }
-
-    /* ACTIVE LIST ------------------------------------------------------ */
-
-    .list-wrapper {
-      margin-top: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      max-height: 540px;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-
-    .active-card {
-      background: var(--card-bg);
-      border-radius: 24px;
-      padding: 9px 12px;
-      border: 1px solid rgba(209, 213, 219, 0.9);
-      box-shadow: 0 10px 22px rgba(148, 163, 184, 0.35);
-      cursor: pointer;
-      transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.08s ease;
-      position: relative;
-    }
-
-    .active-card:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 14px 30px rgba(148, 163, 184, 0.45);
-      border-color: rgba(59, 130, 246, 0.6);
-    }
-
-    .active-card-header {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .active-main {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .active-line-1 {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      align-items: baseline;
-    }
-
-    .active-name {
-      font-size: 0.95rem;
-      font-weight: 600;
-    }
-
-    .active-pront {
-      font-size: 0.75rem;
-      padding: 1px 8px;
-      border-radius: var(--radius-pill);
-      background: rgba(15, 23, 42, 0.05);
-      font-weight: 600;
-    }
-
-    .active-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    .chip {
-      padding: 2px 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      font-size: 0.72rem;
-      background: rgba(248, 250, 252, 0.95);
-    }
-
-    .chip.red { border-color: var(--accent-red); color: #b91c1c; }
-    .chip.green { border-color: var(--accent-green); color: #047857; }
-    .chip.amber { border-color: var(--accent-amber); color: #b45309; }
-
-    .chevron {
-      font-size: 1.1rem;
-      color: #9ca3af;
-      transition: transform 0.16s ease;
-    }
-
-    .active-card.expanded .chevron {
-      transform: rotate(90deg);
-      color: #4b5563;
-    }
-
-    .active-body {
-      margin-top: 7px;
-      border-top: 1px dashed rgba(209, 213, 219, 0.95);
-      padding-top: 7px;
-      display: none;
-      font-size: 0.78rem;
-    }
-
-    .active-card.expanded .active-body {
-      display: block;
-    }
-
-    .active-body-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 8px;
-    }
-
-    @media (max-width: 700px) {
-      .active-body-grid {
-        grid-template-columns: minmax(0, 1fr);
-      }
-    }
-
-    .section-label {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-muted);
-      margin-bottom: 2px;
-    }
-
-    .info-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-
-    .info-list span.label {
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    .pending-banner {
-      margin-top: 6px;
-      padding: 7px 9px;
+    .card {
+      border: 1px solid var(--border);
       border-radius: 16px;
-      background: rgba(248, 250, 252, 0.96);
-      border: 1px dashed rgba(248, 113, 113, 0.7);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      font-size: 0.75rem;
-    }
-
-    .pending-banner span strong {
-      color: #b91c1c;
-    }
-
-    .pending-banner button {
-      border: none;
-      border-radius: 999px;
-      padding: 5px 12px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      background: var(--accent-red);
-      color: #fef2f2;
+      padding: 12px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      box-shadow: 0 10px 26px rgba(0,0,0,0.35);
+      transition: border-color 140ms ease, transform 140ms ease;
       cursor: pointer;
-      box-shadow: 0 10px 22px rgba(239, 68, 68, 0.4);
     }
 
-    .empty-text {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-top: 6px;
+    .card:hover { border-color: rgba(56,189,248,0.35); transform: translateY(-1px); }
+
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+    .card-title { font-weight: 700; }
+    .card-pront { color: var(--muted); font-size: 0.9rem; }
+    .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+    .chip { padding: 4px 10px; border-radius: 10px; font-size: 0.8rem; background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: var(--muted); }
+    .chip.red { border-color: rgba(248,113,113,0.5); color: #fecdd3; background: rgba(248,113,113,0.08); }
+    .chip.green { border-color: rgba(34,197,94,0.5); color: #bbf7d0; background: rgba(34,197,94,0.08); }
+    .chip.amber { border-color: rgba(245,158,11,0.5); color: #fed7aa; background: rgba(245,158,11,0.08); }
+    .chip.blue { border-color: rgba(56,189,248,0.5); color: #e0f2fe; background: rgba(56,189,248,0.08); }
+    .chip.dark { background: rgba(15,23,42,0.7); border-color: rgba(255,255,255,0.1); color: #e2e8f0; }
+
+    .card-body { margin-top: 10px; display: none; gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .card.expanded .card-body { display: grid; }
+
+    .section-label { color: var(--muted); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+    .info-list { list-style: none; display: grid; gap: 6px; }
+    .info-list .label { color: var(--muted); font-size: 0.86rem; }
+
+    .pending-banner { margin-top: 10px; border: 1px solid rgba(245,158,11,0.5); background: rgba(245,158,11,0.08); padding: 10px; border-radius: 12px; display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+    .pending-banner button { border: none; background: #f59e0b; color: #0f172a; padding: 8px 12px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+
+    .empty { color: var(--muted); text-align: center; padding: 14px; border: 1px dashed var(--border); border-radius: 12px; }
+    .loading-dot { display: inline-block; width: 8px; height: 8px; background: var(--accent); border-radius: 999px; animation: pulse 1s infinite; margin-left: 6px; }
+
+    .legend { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+
+    @keyframes pulse { 0% { transform: scale(0.85); opacity: 0.7; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(0.85); opacity: 0.7; } }
+
+    .footer { color: var(--muted); font-size: 0.85rem; text-align: center; padding: 6px; }
+
+    .toast {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: #0b1221;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 160ms ease, transform 160ms ease;
+      pointer-events: none;
+      color: var(--text);
     }
 
-    .loading-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: var(--accent-blue);
-      box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
-      animation: pulse 1.2s infinite;
-      margin-left: 4px;
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 980px) {
+      .panels { grid-template-columns: minmax(0, 1fr); }
+      .summary-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .card-body { grid-template-columns: minmax(0,1fr); }
+      .timeline { grid-template-columns: minmax(0,1fr); }
     }
 
-    @keyframes pulse {
-      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.6); }
-      70% { transform: scale(1.8); box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
-      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
-    }
-
-    .footer {
-      margin-top: 14px;
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      text-align: right;
+    @media (max-width: 560px) {
+      body { padding: 14px; }
+      .summary-grid { grid-template-columns: minmax(0,1fr); }
+      .hero-top { flex-direction: column; align-items: flex-start; }
+      .toolbar { flex-direction: column; align-items: stretch; }
+      .search-field { width: 100%; }
     }
   </style>
 </head>
 <body>
-  <div class="shell">
-    <!-- TOP BAR -->
-    <div class="top-bar">
-      <div class="brand-area">
-        <div class="brand-avatar">CP</div>
-        <div class="brand-text">
-          <span class="title">Cuidados Paliativos · HUC</span>
-          <span class="subtitle">Painel vivo de acompanhamento clínico</span>
+  <div class="page">
+    <header class="hero">
+      <div class="hero-top">
+        <div class="brand">
+          <div class="brand-avatar">CP</div>
+          <div class="brand-text">
+            <span class="title">Cuidados Paliativos · HUC</span>
+            <span class="subtitle">Painel assistencial conectado à planilha institucional</span>
+          </div>
+        </div>
+        <div class="hero-actions">
+          <span class="pill">Acesso seguro · somente logados no domínio</span>
+          <span class="pill last-refresh">Atualizado: <strong id="lastRefresh">--/-- --:--</strong></span>
         </div>
       </div>
-      <div class="top-controls">
+
+      <div class="toolbar">
         <div class="search-field">
-          <span>🧾</span>
-          <input id="inputBuscaPront" type="text" placeholder="Prontuário para buscar / adicionar…" />
-          <button id="btnBuscar">
-            <span>Buscar</span>
-            <span>🔍</span>
-          </button>
+          <input id="inputBuscaPront" type="text" placeholder="Buscar prontuário nas bases (Interconsultas, Saídas, Emergência)" />
+          <button id="btnBuscar">Buscar</button>
         </div>
-        <div class="filter-group">
-          <button class="filter-pill active" data-filter="todos">
-            <span class="dot"></span> Todos
-          </button>
-          <button class="filter-pill" data-filter="uti">
-            <span class="dot"></span> UTI
-          </button>
-          <button class="filter-pill" data-filter="enfermaria">
-            <span class="dot"></span> Enfermaria
-          </button>
-          <button class="filter-pill" data-filter="pendente">
-            <span class="dot"></span> Pendências
-          </button>
+        <div class="filters">
+          <button class="filter-pill active" data-filter="todos"><span class="dot"></span>Todos</button>
+          <button class="filter-pill" data-filter="uti"><span class="dot"></span>UTI</button>
+          <button class="filter-pill" data-filter="enfermaria"><span class="dot"></span>Enfermarias</button>
+          <button class="filter-pill" data-filter="pendente"><span class="dot"></span>Pendências de desfecho</button>
         </div>
       </div>
-    </div>
+      <div class="legend">
+        <span class="chip dark">↺ Expanda um paciente para linha do tempo e desfecho</span>
+        <span class="chip amber">Pendência: desfecho detectado</span>
+        <span class="chip red">Atraso: >48h entre solicitação e resposta</span>
+        <span class="chip blue">UTI recebe prioridade automática na listagem</span>
+      </div>
+    </header>
 
-    <!-- SUMMARY STRIP -->
-    <div class="summary-strip">
+    <section class="summary-grid">
       <div class="summary-card">
         <div>
-          <div class="summary-card-label">Pacientes em acompanhamento</div>
-          <div class="summary-card-value" id="sumTotal">–</div>
+          <small>Pacientes em acompanhamento</small>
+          <div class="value" id="sumTotal">–</div>
+          <div class="trend">Inclui internações ativas no HUC</div>
         </div>
-        <div class="summary-card-icon">🧍‍♂️</div>
+        <div class="chip dark">Monitoramento</div>
       </div>
       <div class="summary-card">
         <div>
-          <div class="summary-card-label">Em UTI</div>
-          <div class="summary-card-value" id="sumUti">–</div>
+          <small>Em UTI</small>
+          <div class="value" id="sumUti">–</div>
+          <div class="trend">Prioridade alta</div>
         </div>
-        <div class="summary-card-icon">🏥</div>
+        <div class="chip blue">🏥</div>
       </div>
       <div class="summary-card">
         <div>
-          <div class="summary-card-label">Pendências de desfecho</div>
-          <div class="summary-card-value" id="sumPendencias">–</div>
+          <small>Pendências de desfecho</small>
+          <div class="value" id="sumPendencias">–</div>
+          <div class="trend">Aguardam movimento à série histórica</div>
         </div>
-        <div class="summary-card-icon">⏳</div>
+        <div class="chip amber">⏳</div>
       </div>
       <div class="summary-card">
         <div>
-          <div class="summary-card-label">> 48h sem resposta</div>
-          <div class="summary-card-value" id="sumAtraso">–</div>
+          <small>> 48h sem resposta</small>
+          <div class="value" id="sumAtraso">–</div>
+          <div class="trend">Tempo Solic → Resp</div>
         </div>
-        <div class="summary-card-icon">⏱️</div>
+        <div class="chip red">⏱️</div>
       </div>
-    </div>
+    </section>
 
-    <!-- MAIN GRID -->
-    <div class="main-grid">
-      <!-- LEFT: SEARCH / ADD -->
-      <section class="panel">
+    <section class="panels">
+      <article class="panel">
         <div class="panel-header">
           <div>
-            <div class="panel-title">
-              <span class="icon">🩺</span>
-              Buscar paciente por prontuário
-            </div>
-            <div class="panel-subtitle">
-              A busca é feita em Geral Interconsultas, Emergência e Saídas.
-            </div>
+            <h2>🩺 Buscar paciente por prontuário</h2>
+            <p>Consulta simultânea em Geral Interconsultas, Saídas e Emergência. Adicione ou atualize o acompanhamento com um clique.</p>
           </div>
-          <span class="badge-soft">Novo acompanhamento</span>
+          <span class="badge">Novo acompanhamento</span>
         </div>
 
         <div id="searchResultContainer">
-          <div class="search-result-empty">
-            Digite um prontuário no topo e clique em <strong>Buscar</strong> para pré-visualizar o caso
-            antes de adicioná-lo ao acompanhamento.
-          </div>
+          <div class="empty">Digite um prontuário e confirme para pré-visualizar o caso.</div>
         </div>
+      </article>
 
-        <div class="small-caption">
-          Após adicionar, o paciente passa a integrar a lista de acompanhamento ativo do CP.
-        </div>
-      </section>
-
-      <!-- RIGHT: ACTIVE LIST -->
-      <section class="panel">
+      <article class="panel">
         <div class="panel-header">
           <div>
-            <div class="panel-title">
-              <span class="icon">📋</span>
-              Acompanhamentos ativos
-            </div>
-            <div class="panel-subtitle">
-              Baseados na aba <strong>Acompanhamento_Ativo</strong> e cruzados com Saídas / Emergência.
+            <h2>📋 Acompanhamentos ativos</h2>
+            <p class="panel-subtitle">Baseada na aba <strong>Acompanhamento_Ativo</strong> e cruzada com Saídas / Emergência.</p>
+          </div>
+          <div class="list-header">
+            <div class="sorter">Ordenar por
+              <select id="sortSelect">
+                <option value="prioridade">Prioridade assistencial</option>
+                <option value="resposta">Tempo Solic → Resp</option>
+                <option value="nome">Nome do paciente</option>
+              </select>
             </div>
           </div>
         </div>
 
-        <div id="listLoading" class="empty-text">
-          Carregando pacientes em acompanhamento…
-          <span class="loading-dot"></span>
-        </div>
-
+        <div id="listLoading" class="empty">Carregando pacientes em acompanhamento… <span class="loading-dot"></span></div>
         <div id="activeList" class="list-wrapper" style="display:none;"></div>
-
-        <div id="emptyList" class="empty-text" style="display:none;">
-          Nenhum paciente em acompanhamento ativo no momento.
-        </div>
-      </section>
-    </div>
+        <div id="emptyList" class="empty" style="display:none;">Nenhum paciente em acompanhamento ativo.</div>
+      </article>
+    </section>
 
     <div class="footer">
       Dados consolidados automaticamente · registros-chave em <strong>Acompanhamento_Ativo</strong> e <strong>Acompanhamento_Historico</strong>.
     </div>
   </div>
 
+  <div id="toast" class="toast"></div>
+
   <script>
     let allAcomps = [];
     let currentFilter = 'todos';
+    let currentSort = 'prioridade';
     let currentSearchPreview = null;
 
     document.addEventListener('DOMContentLoaded', () => {
-      // carrega lista
       refreshAcompanhamentos();
 
-      // filtros
       document.querySelectorAll('.filter-pill').forEach(btn => {
         btn.addEventListener('click', () => {
           document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
@@ -795,10 +472,14 @@
         });
       });
 
-      // busca
       document.getElementById('btnBuscar').addEventListener('click', onBuscarClick);
       document.getElementById('inputBuscaPront').addEventListener('keydown', (ev) => {
         if (ev.key === 'Enter') onBuscarClick();
+      });
+
+      document.getElementById('sortSelect').addEventListener('change', (ev) => {
+        currentSort = ev.target.value;
+        applyFilterAndRender();
       });
     });
 
@@ -823,9 +504,7 @@
 
     function showSearchMessage(msg) {
       const container = document.getElementById('searchResultContainer');
-      container.innerHTML = `
-        <div class="search-result-empty">${msg}</div>
-      `;
+      container.innerHTML = `<div class="empty">${msg}</div>`;
       currentSearchPreview = null;
     }
 
@@ -838,58 +517,45 @@
       }
 
       currentSearchPreview = result;
-
       const p = result;
 
       container.innerHTML = `
-        <div class="patient-preview">
+        <div class="preview-card">
           <div class="preview-top">
-            <div class="preview-main">
-              <div class="preview-name-line">
-                <span class="preview-name">${escapeHtml(p.nome || 'Paciente')}</span>
-                <span class="preview-pront">Prontuário ${escapeHtml(p.prontuario || '')}</span>
-              </div>
+            <div>
+              <div style="font-weight:700; font-size:1rem;">${escapeHtml(p.nome || 'Paciente')}</div>
               <div class="preview-meta">
+                <span>Prontuário ${escapeHtml(p.prontuario || '')}</span>
                 ${p.idade ? `<span>${p.idade} anos</span>` : ''}
                 ${p.sexo ? `<span>${escapeHtml(p.sexo)}</span>` : ''}
                 ${p.municipio ? `<span>${escapeHtml(p.municipio)}</span>` : ''}
-              </div>
-              <div class="preview-meta">
-                ${p.clinica ? `<span class="pill-tag">${escapeHtml(p.clinica)}</span>` : ''}
-                ${p.origem ? `<span class="pill-tag">${escapeHtml(p.origem)}</span>` : ''}
-                ${p.especialidade ? `<span class="pill-tag">${escapeHtml(p.especialidade)}</span>` : ''}
+                ${p.clinica ? `<span>${escapeHtml(p.clinica)}</span>` : ''}
+                ${p.origem ? `<span>${escapeHtml(p.origem)}</span>` : ''}
+                ${p.especialidade ? `<span>${escapeHtml(p.especialidade)}</span>` : ''}
               </div>
             </div>
             <div>
-              ${p.jaAcompanhado
-                ? '<span class="pill-tag green">Já em acompanhamento</span>'
-                : '<span class="pill-tag amber">Novo para o CP</span>'
-              }
+              ${p.jaAcompanhado ? '<span class="tag green">Já em acompanhamento</span>' : '<span class="tag amber">Novo para o CP</span>'}
             </div>
           </div>
 
-          <div class="preview-timeline">
+          <div class="timeline">
             <div class="timeline-block">
-              <div class="timeline-label">Linha do tempo</div>
-              <div class="timeline-value">
-                Solicitação: ${p.dataSolicitacaoLabel || '–'}<br/>
-                Programação: ${p.dataProgramacaoLabel || '–'}<br/>
-                Resposta: ${p.dataRespostaLabel || '–'}
-              </div>
+              <strong>Linha do tempo</strong><br/>
+              Solicitação: ${p.dataSolicitacaoLabel || '–'}<br/>
+              Programação: ${p.dataProgramacaoLabel || '–'}<br/>
+              Resposta: ${p.dataRespostaLabel || '–'}
             </div>
             <div class="timeline-block">
-              <div class="timeline-label">Outras referências</div>
-              <div class="timeline-value">
-                Última emergência: ${p.dataEmergenciaLabel || '–'}<br/>
-                Última saída: ${p.dataSaidaLabel || '–'} (${p.desfechoSaida || '–'})
-              </div>
+              <strong>Outras referências</strong><br/>
+              Última emergência: ${p.dataEmergenciaLabel || '–'}<br/>
+              Última saída: ${p.dataSaidaLabel || '–'} (${p.desfechoSaida || '–'})
             </div>
           </div>
 
           <div class="preview-actions">
             <button class="btn-primary" onclick="onAdicionarClick()">
-              <span>${p.jaAcompanhado ? 'Atualizar acompanhamento' : 'Adicionar ao acompanhamento'}</span>
-              <span>➕</span>
+              ${p.jaAcompanhado ? 'Atualizar acompanhamento' : 'Adicionar ao acompanhamento'}
             </button>
           </div>
         </div>
@@ -898,7 +564,6 @@
 
     function onAdicionarClick() {
       if (!currentSearchPreview || !currentSearchPreview.prontuario) return;
-
       const pront = currentSearchPreview.prontuario;
 
       google.script.run
@@ -908,7 +573,7 @@
         })
         .withFailureHandler(err => {
           console.error(err);
-          showToast('Erro ao salvar acompanhamento.');
+          showToast('Erro ao salvar acompanhamento.', 'error');
         })
         .adicionarOuAtualizarAcompanhamento(pront);
     }
@@ -922,8 +587,7 @@
         .withSuccessHandler(onAcompsLoaded)
         .withFailureHandler(err => {
           console.error(err);
-          document.getElementById('listLoading').textContent =
-            'Erro ao carregar acompanhamentos. Confira o script.';
+          document.getElementById('listLoading').textContent = 'Erro ao carregar acompanhamentos. Confira o script.';
         })
         .listarAcompanhamentosAtivos();
     }
@@ -933,9 +597,11 @@
       document.getElementById('listLoading').style.display = 'none';
       if (!allAcomps.length) {
         document.getElementById('emptyList').style.display = 'block';
+        document.getElementById('activeList').style.display = 'none';
       } else {
         document.getElementById('activeList').style.display = 'flex';
       }
+      document.getElementById('lastRefresh').textContent = new Date().toLocaleString('pt-BR', { hour12: false });
       updateSummaryNumbers();
       applyFilterAndRender();
     }
@@ -958,6 +624,24 @@
       renderActiveList(lst);
     }
 
+    function sortList(list) {
+      const score = (p) => {
+        let s = 0;
+        if (p.precisaMoverSerie) s -= 300;
+        if (p.flagAtraso) s -= 200;
+        if ((p.clinica || '').toLowerCase().includes('uti')) s -= 120;
+        if (p.tempoSolicRespMs) s -= Math.min(p.tempoSolicRespMs / 3600000, 72);
+        return s;
+      };
+
+      return list.slice().sort((a, b) => {
+        if (currentSort === 'prioridade') return score(a) - score(b) || (a.nome || '').localeCompare(b.nome || '');
+        if (currentSort === 'resposta') return (a.tempoSolicRespMs || Number.MAX_SAFE_INTEGER) - (b.tempoSolicRespMs || Number.MAX_SAFE_INTEGER);
+        if (currentSort === 'nome') return (a.nome || '').localeCompare(b.nome || '');
+        return score(a) - score(b);
+      });
+    }
+
     function renderActiveList(list) {
       const container = document.getElementById('activeList');
       container.innerHTML = '';
@@ -969,98 +653,79 @@
         document.getElementById('emptyList').style.display = 'none';
       }
 
-      list.forEach(p => {
+      const sorted = sortList(list);
+
+      sorted.forEach(p => {
         const card = document.createElement('div');
-        card.className = 'active-card';
+        card.className = 'card';
 
         const header = document.createElement('div');
-        header.className = 'active-card-header';
+        header.className = 'card-header';
 
-        const main = document.createElement('div');
-        main.className = 'active-main';
-
-        const line1 = document.createElement('div');
-        line1.className = 'active-line-1';
-
-        const name = document.createElement('span');
-        name.className = 'active-name';
-        name.textContent = p.nome || 'Paciente';
-
-        const pront = document.createElement('span');
-        pront.className = 'active-pront';
+        const hMain = document.createElement('div');
+        const title = document.createElement('div');
+        title.className = 'card-title';
+        title.textContent = p.nome || 'Paciente';
+        const pront = document.createElement('div');
+        pront.className = 'card-pront';
         pront.textContent = `Prontuário ${p.prontuario || ''}`;
+        hMain.appendChild(title);
+        hMain.appendChild(pront);
 
-        line1.appendChild(name);
-        line1.appendChild(pront);
+        const tags = document.createElement('div');
+        tags.className = 'chips';
+        if (p.idade) tags.appendChild(chip(`Idade ${p.idade}`, 'dark'));
+        if (p.clinica) tags.appendChild(chip(p.clinica, (p.clinica.toLowerCase().includes('uti') ? 'blue' : 'dark')));
+        if (p.origem) tags.appendChild(chip(p.origem, 'dark'));
+        if (p.statusCp) tags.appendChild(chip(`Status: ${p.statusCp}`, 'green'));
+        if (p.tempoSolicRespLabel) tags.appendChild(chip(`Solic → Resp: ${p.tempoSolicRespLabel}`, p.flagAtraso ? 'red' : 'green'));
+        if (p.precisaMoverSerie) tags.appendChild(chip('Mover para histórico', 'amber'));
 
-        const meta = document.createElement('div');
-        meta.className = 'active-meta';
-
-        if (p.idade) meta.appendChild(chipText(`${p.idade} anos`));
-        if (p.clinica) meta.appendChild(chipText(p.clinica));
-        if (p.origem) meta.appendChild(chipText(p.origem));
-        if (p.tempoSolicRespLabel) {
-          const ch = chipText(`Solic → Resp: ${p.tempoSolicRespLabel}`);
-          ch.classList.add(p.flagAtraso ? 'red' : 'green');
-          meta.appendChild(ch);
-        }
-
-        main.appendChild(line1);
-        main.appendChild(meta);
+        hMain.appendChild(tags);
 
         const chev = document.createElement('div');
-        chev.className = 'chevron';
-        chev.textContent = '›';
+        chev.className = 'chip';
+        chev.textContent = 'Detalhes';
 
-        header.appendChild(main);
+        header.appendChild(hMain);
         header.appendChild(chev);
 
         const body = document.createElement('div');
-        body.className = 'active-body';
-
-        const grid = document.createElement('div');
-        grid.className = 'active-body-grid';
+        body.className = 'card-body';
 
         const col1 = document.createElement('div');
+        col1.innerHTML = `
+          <div class="section-label">Linha do tempo</div>
+          <ul class="info-list">
+            ${infoItem('Solicitação', p.dataSolicitacaoLabel)}
+            ${infoItem('Programação', p.dataProgramacaoLabel)}
+            ${infoItem('Resposta', p.dataRespostaLabel)}
+            ${infoItem('Última emergência', p.dataEmergenciaLabel)}
+          </ul>
+        `;
+
         const col2 = document.createElement('div');
-        const col1Title = document.createElement('div');
-        col1Title.className = 'section-label';
-        col1Title.textContent = 'Linha do tempo';
-        const col2Title = document.createElement('div');
-        col2Title.className = 'section-label';
-        col2Title.textContent = 'Situação';
+        col2.innerHTML = `
+          <div class="section-label">Situação</div>
+          <ul class="info-list">
+            ${infoItem('Origem', p.origem)}
+            ${infoItem('Município', p.municipio)}
+            ${infoItem('Tempo Solic → Resp', p.tempoSolicRespLabel)}
+            ${infoItem('Inserido em', p.dataInsercaoLabel)}
+            ${infoItem('Inserido por', p.inseridoPor || '—')}
+            ${infoItem('Desfecho detectado', p.desfechoDetectadoLabel || 'ENCONTRA-SE INTERNADO')}
+          </ul>
+        `;
 
-        const list1 = document.createElement('ul');
-        list1.className = 'info-list';
-        list1.appendChild(infoItem('Solicitação', p.dataSolicitacaoLabel));
-        list1.appendChild(infoItem('Programação', p.dataProgramacaoLabel));
-        list1.appendChild(infoItem('Resposta', p.dataRespostaLabel));
-        list1.appendChild(infoItem('Última emergência', p.dataEmergenciaLabel));
-
-        const list2 = document.createElement('ul');
-        list2.className = 'info-list';
-        list2.appendChild(infoItem('Origem', p.origem));
-        list2.appendChild(infoItem('Município', p.municipio));
-        list2.appendChild(infoItem('Tempo Solic → Resp', p.tempoSolicRespLabel));
-        list2.appendChild(infoItem('Desfecho detectado', p.desfechoDetectadoLabel || 'ENCONTRA-SE INTERNADO'));
-
-        col1.appendChild(col1Title);
-        col1.appendChild(list1);
-        col2.appendChild(col2Title);
-        col2.appendChild(list2);
-
-        grid.appendChild(col1);
-        grid.appendChild(col2);
-
-        body.appendChild(grid);
+        body.appendChild(col1);
+        body.appendChild(col2);
 
         if (p.precisaMoverSerie) {
           const banner = document.createElement('div');
           banner.className = 'pending-banner';
           banner.innerHTML = `
             <span>
-              <strong>Desfecho detectado:</strong> ${escapeHtml(p.desfechoDetectadoLabel || '—')} em ${escapeHtml(p.dataDesfechoLabel || '')}.
-              Mover para a Série Histórica?
+              <strong>Desfecho detectado:</strong> ${escapeHtml(p.desfechoDetectadoLabel || '—')} em ${escapeHtml(p.dataDesfechoLabel || '')}. Mover para a Série Histórica?
             </span>
           `;
           const btn = document.createElement('button');
@@ -1096,7 +761,7 @@
         })
         .withFailureHandler(err => {
           console.error(err);
-          showToast('Erro ao mover para a série histórica.');
+          showToast('Erro ao mover para a série histórica.', 'error');
         })
         .moverParaSerieHistorica(pront);
     }
@@ -1113,27 +778,23 @@
       document.getElementById('sumAtraso').textContent = atras || 0;
     }
 
-    function chipText(text) {
+    function chip(text, tone) {
       const span = document.createElement('span');
-      span.className = 'chip';
+      span.className = 'chip' + (tone ? ' ' + tone : '');
       span.textContent = text;
       return span;
     }
 
     function infoItem(label, value) {
-      const li = document.createElement('li');
-      const sl = document.createElement('span');
-      sl.className = 'label';
-      sl.textContent = label + ': ';
-      li.appendChild(sl);
-      li.appendChild(document.createTextNode(value || '–'));
-      return li;
+      return `<li><span class="label">${label}: </span>${value || '–'}</li>`;
     }
 
     function showToast(msg) {
       if (!msg) return;
-      // solução simples: alert. Depois se quiser, fazemos toast bonitinho.
-      alert(msg);
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2600);
     }
 
     function escapeHtml(str) {
