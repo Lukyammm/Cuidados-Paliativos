@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>CP · Painel de Acompanhamento</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+    :root {
+      --bg: #f4f7fb;
+      --bg-soft: #e8eef6;
+      --bg-card: #ffffff;
+      --card: #ffffff;
+      --card-2: #f7fafc;
+      --border: #d7e1ec;
+      --muted: #4b5563;
+      --text: #0f172a;
+      --accent: #0ea5e9;
+      --accent-2: #0f766e;
+      --amber: #b45309;
+      --rose: #b91c1c;
+      --radius: 14px;
+      --shadow: 0 12px 38px rgba(15, 23, 42, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+    }
+
+    body {
+      background: radial-gradient(circle at 18% 12%, rgba(14, 165, 233, 0.16), transparent 28%),
+                  radial-gradient(circle at 82% 0%, rgba(16, 185, 129, 0.12), transparent 24%),
+                  linear-gradient(180deg, #f8fbff, #f1f5f9 60%, #edf2f7);
+      min-height: 100vh;
+      padding: 22px;
+      color: var(--text);
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .page {
+      max-width: 1220px;
+      margin: 0 auto 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .hero {
+      background: linear-gradient(120deg, #ffffff, #f7fbff);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 20px 20px 18px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 16% 60%, rgba(14,165,233,0.08), transparent 50%);
+      pointer-events: none;
+    }
+
+    .hero-top {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .brand-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+    }
+
+    .brand-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .brand-text span.title {
+      font-size: 1.12rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-text span.subtitle {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      font-size: 0.88rem;
+      color: #334155;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      background: #f0f4f8;
+      border: 1px solid var(--border);
+      color: #0f172a;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #f7fafc;
+      font-size: 0.85rem;
+      color: #1f2937;
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .last-refresh { color: var(--muted); font-size: 0.9rem; }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+      align-items: center;
+    }
+
+    .search-field {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 14px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      flex: 1;
+      min-width: 260px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
+    }
+
+    .search-field input {
+      background: transparent;
+      border: none;
+      outline: none;
+      font-size: 0.95rem;
+      width: 100%;
+      color: var(--text);
+    }
+
+    .search-field button {
+      border: none;
+      border-radius: 12px;
+      padding: 10px 16px;
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      color: #ffffff;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 26px rgba(14,165,233,0.35);
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+
+    .search-field button:hover { transform: translateY(-1px); box-shadow: 0 14px 32px rgba(14,165,233,0.45); }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .filter-pill {
+      border-radius: 12px;
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      color: #1f2937;
+      cursor: pointer;
+      transition: all 120ms ease;
+      font-size: 0.85rem;
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .filter-pill.active { background: #e0f2fe; color: #0c4a6e; border-color: #bae6fd; box-shadow: 0 4px 14px rgba(14,165,233,0.2); }
+    .filter-pill .dot { width: 8px; height: 8px; border-radius: 999px; background: #94a3b8; }
+    .filter-pill[data-filter="uti"] .dot { background: #2563eb; }
+    .filter-pill[data-filter="enfermaria"] .dot { background: #0f766e; }
+    .filter-pill[data-filter="pendente"] .dot { background: #b45309; }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .summary-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 16px;
+      box-shadow: var(--shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .summary-card small { color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.75rem; }
+    .summary-card .value { font-size: 1.45rem; font-weight: 800; }
+    .summary-card .trend { font-size: 0.9rem; color: #475569; }
+
+    .panels { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 14px; }
+    .panel { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 18px; box-shadow: var(--shadow); }
+    .panel h2 { font-size: 1.02rem; display: flex; align-items: center; gap: 8px; margin-bottom: 6px; color: #0f172a; }
+    .panel p { color: #475569; font-size: 0.92rem; }
+
+    .preview-card { margin-top: 10px; border-radius: 14px; padding: 12px; background: #e0f2fe; border: 1px solid #bae6fd; }
+    .preview-top { display: flex; justify-content: space-between; gap: 14px; align-items: flex-start; flex-wrap: wrap; }
+    .preview-meta { display: flex; flex-wrap: wrap; gap: 6px; color: #334155; font-size: 0.88rem; }
+    .preview-status { display: inline-flex; align-items: center; justify-content: center; }
+    .tag { padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border); background: #f8fafc; font-size: 0.8rem; color: #0f172a; }
+    .tag.green { border-color: #bbf7d0; color: #0f172a; background: #ecfdf3; }
+    .tag.amber { border-color: #fed7aa; color: #7c2d12; background: #fffbeb; }
+
+    .timeline { margin-top: 10px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .timeline-block { background: #f8fafc; border: 1px dashed var(--border); padding: 10px; border-radius: 12px; font-size: 0.9rem; color: #475569; }
+    .preview-actions { margin-top: 10px; display: flex; justify-content: flex-end; }
+    .btn-primary { border: none; border-radius: 12px; padding: 10px 16px; background: linear-gradient(135deg, #0ea5e9, #0f766e); color: #ffffff; font-weight: 800; cursor: pointer; box-shadow: 0 12px 28px rgba(14,165,233,0.25); display: inline-flex; align-items: center; gap: 8px; }
+    .btn-primary:hover { transform: translateY(-1px); }
+    .btn-primary[disabled] { opacity: 0.7; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-primary .spinner { width: 14px; height: 14px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.55); border-top-color: #ffffff; animation: spin 0.8s linear infinite; }
+
+    .panel-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+    .panel-subtitle { color: #475569; font-size: 0.9rem; }
+
+    .list-header { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .sorter { background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 8px 10px; color: #475569; font-size: 0.9rem; }
+    .sorter select { background: transparent; border: none; color: var(--text); font-weight: 600; }
+
+    .list-wrapper { margin-top: 10px; display: flex; flex-direction: column; gap: 10px; max-height: 560px; overflow-y: auto; padding-right: 4px; }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      background: #ffffff;
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.12);
+      transition: border-color 140ms ease, transform 140ms ease, box-shadow 140ms ease;
+      cursor: pointer;
+    }
+
+    .card:hover { border-color: #bae6fd; transform: translateY(-1px); box-shadow: 0 12px 30px rgba(14,165,233,0.16); }
+
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+    .card-title { font-weight: 700; color: #0f172a; }
+    .card-pront { color: #475569; font-size: 0.9rem; }
+    .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+    .chip { padding: 4px 10px; border-radius: 10px; font-size: 0.8rem; background: #f8fafc; border: 1px solid var(--border); color: #1f2937; }
+    .chip.red { border-color: #fecdd3; color: #7f1d1d; background: #fff1f2; }
+    .chip.green { border-color: #bbf7d0; color: #0f172a; background: #ecfdf3; }
+    .chip.amber { border-color: #fed7aa; color: #7c2d12; background: #fffbeb; }
+    .chip.blue { border-color: #bae6fd; color: #0c4a6e; background: #e0f2fe; }
+    .chip.dark { background: #0f172a; border-color: #0f172a; color: #e2e8f0; }
+
+    .card-body { margin-top: 10px; display: none; gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .card.expanded .card-body { display: grid; }
+
+    .section-label { color: #475569; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+    .info-list { list-style: none; display: grid; gap: 6px; }
+    .info-list .label { color: #475569; font-size: 0.86rem; }
+
+    .pending-banner { margin-top: 10px; border: 1px solid #fed7aa; background: #fffbeb; padding: 10px; border-radius: 12px; display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+    .pending-banner button { border: none; background: #f59e0b; color: #0f172a; padding: 8px 12px; border-radius: 10px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 18px rgba(245,158,11,0.25); }
+
+    .danger-banner { margin-top: 10px; border: 1px solid #fecdd3; background: #fff1f2; padding: 10px; border-radius: 12px; display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+    .danger-banner button { border: none; background: #f43f5e; color: #fff; padding: 8px 12px; border-radius: 10px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 18px rgba(244,63,94,0.25); }
+
+    .empty { color: #475569; text-align: center; padding: 14px; border: 1px dashed var(--border); border-radius: 12px; background: #f8fafc; }
+    .loading-dot { display: inline-block; width: 8px; height: 8px; background: var(--accent); border-radius: 999px; animation: pulse 1s infinite; margin-left: 6px; }
+
+    .legend { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    @keyframes pulse { 0% { transform: scale(0.85); opacity: 0.7; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(0.85); opacity: 0.7; } }
+
+    .footer { color: #475569; font-size: 0.85rem; text-align: center; padding: 6px; }
+
+    .toast {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 160ms ease, transform 160ms ease;
+      pointer-events: none;
+      color: #e2e8f0;
+    }
+
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 980px) {
+      .panels { grid-template-columns: minmax(0, 1fr); }
+      .summary-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .card-body { grid-template-columns: minmax(0,1fr); }
+      .timeline { grid-template-columns: minmax(0,1fr); }
+    }
+
+    @media (max-width: 560px) {
+      body { padding: 14px; }
+      .summary-grid { grid-template-columns: minmax(0,1fr); }
+      .hero-top { flex-direction: column; align-items: flex-start; }
+      .toolbar { flex-direction: column; align-items: stretch; }
+      .search-field { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <div class="hero-top">
+        <div class="brand">
+          <div class="brand-avatar" aria-label="Cuidados Paliativos" role="img">
+            <img src="https://media.istockphoto.com/id/1387190499/pt/vetorial/healthcare-palliative-care-icon-simple-editable-vector-design-isolated-on-a-white.jpg?s=612x612&w=0&k=20&c=h5ld_77o5qqvW7fv7WG2ba_Xk9Pz7MGdqDbS1L0v3X4=" alt="Logo Cuidados Paliativos" />
+          </div>
+          <div class="brand-text">
+            <span class="title">Cuidados Paliativos · HUC</span>
+            <span class="subtitle">Painel assistencial conectado à planilha institucional</span>
+          </div>
+        </div>
+        <div class="hero-actions">
+          <span class="pill">Acesso seguro · somente logados no domínio</span>
+          <span class="pill last-refresh">Atualizado: <strong id="lastRefresh">--/-- --:--</strong></span>
+          <span class="pill">Versão HTML local · dados fictícios</span>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="search-field">
+          <input id="inputBuscaPront" type="text" placeholder="Buscar prontuário nas bases (Interconsultas, Saídas, Emergência)" />
+          <button id="btnBuscar">Buscar</button>
+        </div>
+        <div class="filters">
+          <button class="filter-pill active" data-filter="todos"><span class="dot"></span>Todos</button>
+          <button class="filter-pill" data-filter="uti"><span class="dot"></span>UTI</button>
+          <button class="filter-pill" data-filter="enfermaria"><span class="dot"></span>Enfermarias</button>
+          <button class="filter-pill" data-filter="pendente"><span class="dot"></span>Pendências de desfecho</button>
+        </div>
+      </div>
+      <div class="legend">
+        <span class="chip dark">↺ Expanda um paciente para linha do tempo e desfecho</span>
+        <span class="chip amber">Pendência: desfecho detectado</span>
+        <span class="chip red">Atraso: >48h entre solicitação e resposta</span>
+        <span class="chip blue">UTI recebe prioridade automática na listagem</span>
+      </div>
+    </header>
+
+    <section class="summary-grid">
+      <div class="summary-card">
+        <div>
+          <small>Pacientes em acompanhamento</small>
+          <div class="value" id="sumTotal">–</div>
+          <div class="trend">Inclui internações ativas no HUC</div>
+        </div>
+        <div class="chip dark">Monitoramento</div>
+      </div>
+      <div class="summary-card">
+        <div>
+          <small>Em UTI</small>
+          <div class="value" id="sumUti">–</div>
+          <div class="trend">Prioridade alta</div>
+        </div>
+        <div class="chip blue">🏥</div>
+      </div>
+      <div class="summary-card">
+        <div>
+          <small>Pendências de desfecho</small>
+          <div class="value" id="sumPendencias">–</div>
+          <div class="trend">Aguardam movimento à série histórica</div>
+        </div>
+        <div class="chip amber">⏳</div>
+      </div>
+      <div class="summary-card">
+        <div>
+          <small>> 48h sem resposta</small>
+          <div class="value" id="sumAtraso">–</div>
+          <div class="trend">Tempo Solic → Resp</div>
+        </div>
+        <div class="chip red">⏱️</div>
+      </div>
+    </section>
+
+    <section class="panels">
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <h2>📋 Acompanhamentos ativos</h2>
+            <p class="panel-subtitle">Baseada na aba <strong>Acompanhamento_Ativo</strong> e cruzada com Saídas / Emergência.</p>
+          </div>
+          <div class="list-header">
+            <div class="sorter">Ordenar por
+              <select id="sortSelect">
+                <option value="prioridade">Prioridade assistencial</option>
+                <option value="resposta">Tempo Solic → Resp</option>
+                <option value="nome">Nome do paciente</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div id="listLoading" class="empty">Carregando pacientes em acompanhamento… <span class="loading-dot"></span></div>
+        <div id="activeList" class="list-wrapper" style="display:none;"></div>
+        <div id="emptyList" class="empty" style="display:none;">Nenhum paciente em acompanhamento ativo.</div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <h2>🩺 Buscar paciente por prontuário</h2>
+            <p>Consulta simultânea em Geral Interconsultas, Saídas e Emergência. Adicione ou atualize o acompanhamento com um clique.</p>
+          </div>
+          <span class="badge">Novo acompanhamento</span>
+        </div>
+
+        <div id="searchResultContainer">
+          <div class="empty">Digite um prontuário e confirme para pré-visualizar o caso.</div>
+        </div>
+      </article>
+    </section>
+
+    <div class="footer">
+      Dados consolidados automaticamente · registros-chave em <strong>Acompanhamento_Ativo</strong> e <strong>Acompanhamento_Historico</strong>.
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const isAppsScript = typeof google !== 'undefined' && google.script && google.script.run;
+    const scriptRunner = isAppsScript ? google.script.run : createLocalRunner();
+
+    const MOCK_ACOMPANHAMENTOS = [
+      {
+        nome: 'Ana Luiza Fernandes',
+        prontuario: '102030',
+        idade: 72,
+        sexo: 'F',
+        clinica: 'UTI Geral',
+        origem: 'Interconsulta',
+        statusCp: 'Acompanhamento ativo',
+        tempoSolicRespLabel: '18h',
+        tempoSolicRespMs: 18 * 3600000,
+        flagAtraso: false,
+        duplicado: false,
+        precisaMoverSerie: false,
+        dataSolicitacaoLabel: '14/05/2024 09:20',
+        dataProgramacaoLabel: '14/05/2024 15:00',
+        dataRespostaLabel: '15/05/2024 03:00',
+        dataEmergenciaLabel: '13/05/2024',
+        dataSaidaLabel: '—',
+        desfechoSaida: '—',
+        municipio: 'Curitiba',
+        dataInsercaoLabel: '14/05/2024 09:25',
+        inseridoPor: 'Equipe CP',
+        desfechoDetectadoLabel: 'ENCONTRA-SE INTERNADO'
+      },
+      {
+        nome: 'Carlos Eduardo Ramos',
+        prontuario: '778899',
+        idade: 64,
+        sexo: 'M',
+        clinica: 'Enfermaria Clínica',
+        origem: 'Saída hospitalar',
+        statusCp: 'Planejado para histórico',
+        tempoSolicRespLabel: '52h',
+        tempoSolicRespMs: 52 * 3600000,
+        flagAtraso: true,
+        duplicado: false,
+        precisaMoverSerie: true,
+        dataSolicitacaoLabel: '12/05/2024 08:00',
+        dataProgramacaoLabel: '13/05/2024 10:00',
+        dataRespostaLabel: '14/05/2024 12:00',
+        dataEmergenciaLabel: '10/05/2024',
+        dataSaidaLabel: '14/05/2024',
+        desfechoSaida: 'Alta com cuidados paliativos',
+        municipio: 'Colombo',
+        dataInsercaoLabel: '12/05/2024 08:05',
+        inseridoPor: 'Coordenação CP',
+        desfechoDetectadoLabel: 'Alta identificada',
+        dataDesfechoLabel: '14/05/2024'
+      },
+      {
+        nome: 'Beatriz Nogueira',
+        prontuario: '445566',
+        idade: 58,
+        sexo: 'F',
+        clinica: 'UTI Cardio',
+        origem: 'Emergência',
+        statusCp: 'Acompanhamento ativo',
+        tempoSolicRespLabel: '7h',
+        tempoSolicRespMs: 7 * 3600000,
+        flagAtraso: false,
+        duplicado: false,
+        precisaMoverSerie: false,
+        dataSolicitacaoLabel: '15/05/2024 06:40',
+        dataProgramacaoLabel: '15/05/2024 09:00',
+        dataRespostaLabel: '15/05/2024 13:40',
+        dataEmergenciaLabel: '15/05/2024',
+        dataSaidaLabel: '—',
+        desfechoSaida: '—',
+        municipio: 'São José dos Pinhais',
+        dataInsercaoLabel: '15/05/2024 06:42',
+        inseridoPor: 'Residência CP',
+        desfechoDetectadoLabel: 'ENCONTRA-SE INTERNADO'
+      }
+    ];
+
+    const MOCK_PACIENTES = {
+      '102030': {
+        encontrado: true,
+        nome: 'Ana Luiza Fernandes',
+        prontuario: '102030',
+        idade: 72,
+        sexo: 'Feminino',
+        clinica: 'UTI Geral',
+        origem: 'Interconsulta',
+        especialidade: 'Clínica Médica',
+        municipio: 'Curitiba',
+        dataEmergenciaLabel: '13/05/2024',
+        dataSaidaLabel: '—',
+        desfechoSaida: '—',
+        dataSolicitacaoLabel: '14/05/2024 09:20',
+        dataProgramacaoLabel: '14/05/2024 15:00',
+        dataRespostaLabel: '15/05/2024 03:00',
+        tempoSolicRespLabel: '18h'
+      },
+      '778899': {
+        encontrado: true,
+        nome: 'Carlos Eduardo Ramos',
+        prontuario: '778899',
+        idade: 64,
+        sexo: 'Masculino',
+        clinica: 'Enfermaria Clínica',
+        origem: 'Saída hospitalar',
+        especialidade: 'Gastro',
+        municipio: 'Colombo',
+        dataEmergenciaLabel: '10/05/2024',
+        dataSaidaLabel: '14/05/2024',
+        desfechoSaida: 'Alta com cuidados paliativos',
+        dataSolicitacaoLabel: '12/05/2024 08:00',
+        dataProgramacaoLabel: '13/05/2024 10:00',
+        dataRespostaLabel: '14/05/2024 12:00',
+        tempoSolicRespLabel: '52h'
+      },
+      '445566': {
+        encontrado: true,
+        nome: 'Beatriz Nogueira',
+        prontuario: '445566',
+        idade: 58,
+        sexo: 'Feminino',
+        clinica: 'UTI Cardio',
+        origem: 'Emergência',
+        especialidade: 'Cardiologia',
+        municipio: 'São José dos Pinhais',
+        dataEmergenciaLabel: '15/05/2024',
+        dataSaidaLabel: '—',
+        desfechoSaida: '—',
+        dataSolicitacaoLabel: '15/05/2024 06:40',
+        dataProgramacaoLabel: '15/05/2024 09:00',
+        dataRespostaLabel: '15/05/2024 13:40',
+        tempoSolicRespLabel: '7h'
+      }
+    };
+
+    function createLocalApi() {
+      let dataset = MOCK_ACOMPANHAMENTOS.map((p, idx) => ({
+        ...p,
+        jaAcompanhado: true,
+        rowIndex: idx + 2
+      }));
+
+      const updateIndexes = () => {
+        dataset = dataset.map((p, idx) => ({ ...p, rowIndex: idx + 2 }));
+        return dataset;
+      };
+
+      return {
+        listarAcompanhamentosAtivos() {
+          return updateIndexes();
+        },
+        searchPacientePorProntuario(prontuario) {
+          const base = MOCK_PACIENTES[prontuario];
+          if (!base) return { encontrado: false };
+          const jaAcompanhado = dataset.some(p => p.prontuario === prontuario);
+          return { ...base, jaAcompanhado };
+        },
+        adicionarOuAtualizarAcompanhamento(prontuario) {
+          const found = MOCK_PACIENTES[prontuario];
+          if (!found) throw new Error('Paciente não localizado nesta versão demo.');
+          const existingIndex = dataset.findIndex(p => p.prontuario === prontuario);
+          const merged = {
+            ...dataset[existingIndex],
+            ...found,
+            prontuario,
+            nome: found.nome,
+            idade: found.idade,
+            clinica: found.clinica,
+            origem: found.origem,
+            tempoSolicRespLabel: found.tempoSolicRespLabel,
+            tempoSolicRespMs: parseInt(found.tempoSolicRespLabel, 10) * 3600000 || dataset[existingIndex]?.tempoSolicRespMs,
+            flagAtraso: (dataset[existingIndex]?.flagAtraso) || (parseInt(found.tempoSolicRespLabel, 10) > 48),
+            statusCp: existingIndex >= 0 ? (dataset[existingIndex].statusCp || 'Acompanhamento ativo') : 'Acompanhamento ativo',
+            dataSolicitacaoLabel: found.dataSolicitacaoLabel,
+            dataProgramacaoLabel: found.dataProgramacaoLabel,
+            dataRespostaLabel: found.dataRespostaLabel,
+            dataEmergenciaLabel: found.dataEmergenciaLabel,
+            dataInsercaoLabel: dataset[existingIndex]?.dataInsercaoLabel || new Date().toLocaleString('pt-BR', { hour12: false }),
+            inseridoPor: dataset[existingIndex]?.inseridoPor || 'Versão local',
+            desfechoDetectadoLabel: dataset[existingIndex]?.desfechoDetectadoLabel || 'ENCONTRA-SE INTERNADO',
+            dataDesfechoLabel: dataset[existingIndex]?.dataDesfechoLabel || ''
+          };
+
+          if (existingIndex >= 0) {
+            dataset[existingIndex] = { ...dataset[existingIndex], ...merged, precisaMoverSerie: false };
+            updateIndexes();
+            return 'Acompanhamento atualizado (demo local).';
+          }
+
+          dataset.unshift({
+            ...merged,
+            precisaMoverSerie: false,
+            flagAtraso: merged.flagAtraso || false
+          });
+          updateIndexes();
+          return 'Acompanhamento registrado (demo local).';
+        },
+        moverParaSerieHistorica(prontuario) {
+          dataset = dataset.filter(p => p.prontuario !== prontuario);
+          updateIndexes();
+          return 'Paciente movido para a série histórica (demo local).';
+        },
+        excluirAcompanhamentoPorLinha(rowIndex) {
+          dataset = dataset.filter(p => p.rowIndex !== rowIndex);
+          updateIndexes();
+          return 'Registro excluído (demo local).';
+        }
+      };
+    }
+
+    function createLocalRunner() {
+      const api = createLocalApi();
+      let successHandler = null;
+      let failureHandler = null;
+
+      const reset = () => {
+        successHandler = null;
+        failureHandler = null;
+      };
+
+      const runner = new Proxy({}, {
+        get(_target, prop) {
+          if (prop === 'withSuccessHandler') {
+            return (fn) => { successHandler = fn; return runner; };
+          }
+          if (prop === 'withFailureHandler') {
+            return (fn) => { failureHandler = fn; return runner; };
+          }
+          if (api[prop]) {
+            return (...args) => {
+              Promise.resolve()
+                .then(() => api[prop](...args))
+                .then(res => {
+                  if (typeof successHandler === 'function') successHandler(res);
+                })
+                .catch(err => {
+                  if (typeof failureHandler === 'function') failureHandler(err);
+                  else console.error(err);
+                })
+                .finally(() => reset());
+              return runner;
+            };
+          }
+          return () => runner;
+        }
+      });
+
+      return runner;
+    }
+
+    let allAcomps = [];
+    let currentFilter = 'todos';
+    let currentSort = 'prioridade';
+    let currentSearchPreview = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      refreshAcompanhamentos();
+
+      document.querySelectorAll('.filter-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentFilter = btn.dataset.filter;
+          applyFilterAndRender();
+        });
+      });
+
+      document.getElementById('btnBuscar').addEventListener('click', onBuscarClick);
+      document.getElementById('inputBuscaPront').addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter') onBuscarClick();
+      });
+
+      document.getElementById('sortSelect').addEventListener('change', (ev) => {
+        currentSort = ev.target.value;
+        applyFilterAndRender();
+      });
+    });
+
+    function onBuscarClick() {
+      const campo = document.getElementById('inputBuscaPront');
+      const v = (campo.value || '').trim();
+      if (!v) {
+        showSearchMessage('Digite um prontuário válido para buscar.');
+        return;
+      }
+
+      showSearchMessage('Buscando dados do paciente…');
+
+      scriptRunner
+        .withSuccessHandler(onSearchResult)
+        .withFailureHandler(err => {
+          console.error(err);
+          showSearchMessage('Erro ao buscar dados. Confira o prontuário ou o script.');
+        })
+        .searchPacientePorProntuario(v);
+    }
+
+    function showSearchMessage(msg) {
+      const container = document.getElementById('searchResultContainer');
+      container.innerHTML = `<div class="empty">${msg}</div>`;
+      currentSearchPreview = null;
+    }
+
+    function onSearchResult(result) {
+      const container = document.getElementById('searchResultContainer');
+
+      if (!result || !result.encontrado) {
+        showSearchMessage('Não encontramos esse prontuário em Geral Interconsultas, Saídas ou Emergência.');
+        return;
+      }
+
+      currentSearchPreview = result;
+      const p = result;
+
+      container.innerHTML = `
+        <div class="preview-card">
+          <div class="preview-top">
+            <div>
+              <div style="font-weight:700; font-size:1rem;">${escapeHtml(p.nome || 'Paciente')}</div>
+              <div class="preview-meta">
+                <span>Prontuário ${escapeHtml(p.prontuario || '')}</span>
+                ${p.idade ? `<span>${p.idade} anos</span>` : ''}
+                ${p.sexo ? `<span>${escapeHtml(p.sexo)}</span>` : ''}
+                ${p.municipio ? `<span>${escapeHtml(p.municipio)}</span>` : ''}
+                ${p.clinica ? `<span>${escapeHtml(p.clinica)}</span>` : ''}
+                ${p.origem ? `<span>${escapeHtml(p.origem)}</span>` : ''}
+                ${p.especialidade ? `<span>${escapeHtml(p.especialidade)}</span>` : ''}
+              </div>
+            </div>
+            <div class="preview-status">
+              ${p.jaAcompanhado ? '<span class="tag green">Já em acompanhamento</span>' : '<span class="tag amber">Novo para o CP</span>'}
+            </div>
+          </div>
+
+          <div class="timeline">
+            <div class="timeline-block">
+              <strong>Linha do tempo</strong><br/>
+              Solicitação: ${p.dataSolicitacaoLabel || '–'}<br/>
+              Programação: ${p.dataProgramacaoLabel || '–'}<br/>
+              Resposta: ${p.dataRespostaLabel || '–'}
+            </div>
+            <div class="timeline-block">
+              <strong>Outras referências</strong><br/>
+              Última emergência: ${p.dataEmergenciaLabel || '–'}<br/>
+              Última saída: ${p.dataSaidaLabel || '–'} (${p.desfechoSaida || '–'})
+            </div>
+          </div>
+
+          <div class="preview-actions">
+            <button class="btn-primary" id="btnAdicionar" data-default-label="${p.jaAcompanhado ? 'Atualizar acompanhamento' : 'Adicionar ao acompanhamento'}" onclick="onAdicionarClick()">
+              <span class="spinner" style="display:none;"></span>
+              <span class="btn-label">${p.jaAcompanhado ? 'Atualizar acompanhamento' : 'Adicionar ao acompanhamento'}</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function onAdicionarClick() {
+      if (!currentSearchPreview || !currentSearchPreview.prontuario) return;
+      const pront = currentSearchPreview.prontuario;
+      const btn = document.getElementById('btnAdicionar');
+      const labelEl = btn?.querySelector('.btn-label');
+      const spinnerEl = btn?.querySelector('.spinner');
+      const defaultLabel = btn?.dataset?.defaultLabel || 'Salvar acompanhamento';
+
+      if (btn) btn.disabled = true;
+      if (labelEl) labelEl.textContent = 'Salvando...';
+      if (spinnerEl) spinnerEl.style.display = 'inline-block';
+
+      scriptRunner
+        .withSuccessHandler(msg => {
+          showToast(msg || 'Acompanhamento registrado.');
+          showSearchMessage('Acompanhamento registrado. Pesquise outro prontuário para continuar.');
+          document.getElementById('inputBuscaPront').value = '';
+          refreshAcompanhamentos();
+          if (btn) btn.disabled = false;
+          if (labelEl) labelEl.textContent = defaultLabel;
+          if (spinnerEl) spinnerEl.style.display = 'none';
+        })
+        .withFailureHandler(err => {
+          console.error(err);
+          showToast('Erro ao salvar acompanhamento.', 'error');
+          if (btn) btn.disabled = false;
+          if (labelEl) labelEl.textContent = defaultLabel;
+          if (spinnerEl) spinnerEl.style.display = 'none';
+        })
+        .adicionarOuAtualizarAcompanhamento(pront);
+    }
+
+    function refreshAcompanhamentos() {
+      document.getElementById('listLoading').style.display = 'block';
+      document.getElementById('activeList').style.display = 'none';
+      document.getElementById('emptyList').style.display = 'none';
+
+      scriptRunner
+        .withSuccessHandler(onAcompsLoaded)
+        .withFailureHandler(err => {
+          console.error(err);
+          document.getElementById('listLoading').textContent = 'Erro ao carregar acompanhamentos. Confira o script.';
+        })
+        .listarAcompanhamentosAtivos();
+    }
+
+    function onAcompsLoaded(ac) {
+      allAcomps = ac || [];
+      document.getElementById('listLoading').style.display = 'none';
+      if (!allAcomps.length) {
+        document.getElementById('emptyList').style.display = 'block';
+        document.getElementById('activeList').style.display = 'none';
+      } else {
+        document.getElementById('activeList').style.display = 'flex';
+      }
+      document.getElementById('lastRefresh').textContent = new Date().toLocaleString('pt-BR', { hour12: false });
+      updateSummaryNumbers();
+      applyFilterAndRender();
+    }
+
+    function applyFilterAndRender() {
+      let lst = allAcomps.slice();
+
+      if (currentFilter === 'uti') {
+        lst = lst.filter(p => (p.clinica || '').toLowerCase().includes('uti'));
+      } else if (currentFilter === 'enfermaria') {
+        const c = (p) => (p.clinica || '').toLowerCase();
+        lst = lst.filter(p => {
+          const x = c(p);
+          return x.includes('enferm') || x.includes('enf') || x.includes('enfermaria');
+        });
+      } else if (currentFilter === 'pendente') {
+        lst = lst.filter(p => p.precisaMoverSerie);
+      }
+
+      renderActiveList(lst);
+    }
+
+    function sortList(list) {
+      const score = (p) => {
+        let s = 0;
+        if (p.precisaMoverSerie) s -= 300;
+        if (p.flagAtraso) s -= 200;
+        if ((p.clinica || '').toLowerCase().includes('uti')) s -= 120;
+        if (p.tempoSolicRespMs) s -= Math.min(p.tempoSolicRespMs / 3600000, 72);
+        return s;
+      };
+
+      return list.slice().sort((a, b) => {
+        if (currentSort === 'prioridade') return score(a) - score(b) || (a.nome || '').localeCompare(b.nome || '');
+        if (currentSort === 'resposta') return (a.tempoSolicRespMs || Number.MAX_SAFE_INTEGER) - (b.tempoSolicRespMs || Number.MAX_SAFE_INTEGER);
+        if (currentSort === 'nome') return (a.nome || '').localeCompare(b.nome || '');
+        return score(a) - score(b);
+      });
+    }
+
+    function renderActiveList(list) {
+      const container = document.getElementById('activeList');
+      container.innerHTML = '';
+
+      if (!list.length) {
+        document.getElementById('emptyList').style.display = 'block';
+        return;
+      } else {
+        document.getElementById('emptyList').style.display = 'none';
+      }
+
+      const sorted = sortList(list);
+
+      sorted.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        const header = document.createElement('div');
+        header.className = 'card-header';
+
+        const hMain = document.createElement('div');
+        const title = document.createElement('div');
+        title.className = 'card-title';
+        title.textContent = p.nome || 'Paciente';
+        const pront = document.createElement('div');
+        pront.className = 'card-pront';
+        pront.textContent = `Prontuário ${p.prontuario || ''}`;
+        hMain.appendChild(title);
+        hMain.appendChild(pront);
+
+        const tags = document.createElement('div');
+        tags.className = 'chips';
+        if (p.idade) tags.appendChild(chip(`Idade ${p.idade}`, 'dark'));
+        if (p.clinica) tags.appendChild(chip(p.clinica, (p.clinica.toLowerCase().includes('uti') ? 'blue' : 'dark')));
+        if (p.origem) tags.appendChild(chip(p.origem, 'dark'));
+        if (p.statusCp) tags.appendChild(chip(`Status: ${p.statusCp}`, 'green'));
+        if (p.tempoSolicRespLabel) tags.appendChild(chip(`Solic → Resp: ${p.tempoSolicRespLabel}`, p.flagAtraso ? 'red' : 'green'));
+        if (p.duplicado) tags.appendChild(chip('Duplicado', 'red'));
+        if (p.precisaMoverSerie) tags.appendChild(chip('Mover para histórico', 'amber'));
+
+        hMain.appendChild(tags);
+
+        const chev = document.createElement('div');
+        chev.className = 'chip';
+        chev.textContent = 'Detalhes';
+
+        header.appendChild(hMain);
+        header.appendChild(chev);
+
+        const body = document.createElement('div');
+        body.className = 'card-body';
+
+        const col1 = document.createElement('div');
+        col1.innerHTML = `
+          <div class="section-label">Linha do tempo</div>
+          <ul class="info-list">
+            ${infoItem('Solicitação', p.dataSolicitacaoLabel)}
+            ${infoItem('Programação', p.dataProgramacaoLabel)}
+            ${infoItem('Resposta', p.dataRespostaLabel)}
+            ${infoItem('Última emergência', p.dataEmergenciaLabel)}
+          </ul>
+        `;
+
+        const col2 = document.createElement('div');
+        col2.innerHTML = `
+          <div class="section-label">Situação</div>
+          <ul class="info-list">
+            ${infoItem('Origem', p.origem)}
+            ${infoItem('Município', p.municipio)}
+            ${infoItem('Tempo Solic → Resp', p.tempoSolicRespLabel)}
+            ${infoItem('Inserido em', p.dataInsercaoLabel)}
+            ${infoItem('Inserido por', p.inseridoPor || '—')}
+            ${infoItem('Desfecho detectado', p.desfechoDetectadoLabel || 'ENCONTRA-SE INTERNADO')}
+          </ul>
+        `;
+
+        body.appendChild(col1);
+        body.appendChild(col2);
+
+        if (p.precisaMoverSerie) {
+          const banner = document.createElement('div');
+          banner.className = 'pending-banner';
+          banner.innerHTML = `
+            <span>
+              <strong>Desfecho detectado:</strong> ${escapeHtml(p.desfechoDetectadoLabel || '—')} em ${escapeHtml(p.dataDesfechoLabel || '')}. Mover para a Série Histórica?
+            </span>
+          `;
+          const btn = document.createElement('button');
+          btn.textContent = 'Mover agora';
+          btn.addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            moverParaSerie(p.prontuario);
+          });
+          banner.appendChild(btn);
+          body.appendChild(banner);
+        }
+
+        if (p.duplicado) {
+          const dup = document.createElement('div');
+          dup.className = 'danger-banner';
+          const linhas = (p.linhasDuplicadas || []).join(', ');
+          dup.innerHTML = `
+            <span>
+              <strong>Registro duplicado:</strong> prontuário repetido nas linhas ${linhas || '—'}.
+              Exclua as duplicatas para manter apenas um acompanhamento ativo.
+            </span>
+          `;
+          const btnRemover = document.createElement('button');
+          btnRemover.textContent = 'Excluir este registro';
+          btnRemover.addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            excluirRegistro(p.rowIndex, p.prontuario);
+          });
+          dup.appendChild(btnRemover);
+          body.appendChild(dup);
+        }
+
+        card.appendChild(header);
+        card.appendChild(body);
+
+        card.addEventListener('click', () => {
+          card.classList.toggle('expanded');
+        });
+
+        container.appendChild(card);
+      });
+    }
+
+    function moverParaSerie(pront) {
+      if (!pront) return;
+      const ok = confirm('Confirmar movimentação deste paciente para a Série Histórica?');
+      if (!ok) return;
+
+      scriptRunner
+        .withSuccessHandler(msg => {
+          showToast(msg || 'Paciente movido para a série histórica.');
+          refreshAcompanhamentos();
+        })
+        .withFailureHandler(err => {
+          console.error(err);
+          showToast('Erro ao mover para a série histórica.', 'error');
+        })
+        .moverParaSerieHistorica(pront);
+    }
+
+    function excluirRegistro(rowIndex, prontuario) {
+      if (!rowIndex) return;
+      const ok = confirm(`Confirmar exclusão do registro do prontuário ${prontuario || ''}?`);
+      if (!ok) return;
+
+      scriptRunner
+        .withSuccessHandler(msg => {
+          showToast(msg || 'Registro excluído.');
+          refreshAcompanhamentos();
+        })
+        .withFailureHandler(err => {
+          console.error(err);
+          showToast('Erro ao excluir registro.', 'error');
+        })
+        .excluirAcompanhamentoPorLinha(rowIndex);
+    }
+
+    function updateSummaryNumbers() {
+      const total = allAcomps.length;
+      const uti = allAcomps.filter(p => (p.clinica || '').toLowerCase().includes('uti')).length;
+      const pend = allAcomps.filter(p => p.precisaMoverSerie).length;
+      const atras = allAcomps.filter(p => p.flagAtraso).length;
+
+      document.getElementById('sumTotal').textContent = total || 0;
+      document.getElementById('sumUti').textContent = uti || 0;
+      document.getElementById('sumPendencias').textContent = pend || 0;
+      document.getElementById('sumAtraso').textContent = atras || 0;
+    }
+
+    function chip(text, tone) {
+      const span = document.createElement('span');
+      span.className = 'chip' + (tone ? ' ' + tone : '');
+      span.textContent = text;
+      return span;
+    }
+
+    function infoItem(label, value) {
+      return `<li><span class="label">${label}: </span>${value || '–'}</li>`;
+    }
+
+    function showToast(msg) {
+      if (!msg) return;
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+
+    function escapeHtml(str) {
+      if (!str && str !== 0) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>
